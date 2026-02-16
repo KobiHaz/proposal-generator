@@ -1,0 +1,51 @@
+{
+  "project": {
+    "name": "proposal-generator",
+    "description": "A React-based proposal and quote generator application"
+  },
+  "techStack": {
+    "frontend": {
+      "framework": "React",
+      "version": "19",
+      "language": "TypeScript",
+      "buildTool": "Vite",
+      "styling": "Tailwind CSS v4",
+      "uiComponents": ["Radix UI"],
+      "icons": "Lucide React",
+      "utilities": ["date-fns", "clsx", "tailwind-merge", "class-variance-authority"],
+      "stateManagement": ["React State"],
+      "additional": []
+    },
+    "backend": {
+      "platform": null,
+      "services": [],
+      "additional": []
+    },
+    "shared": {
+      "packages": [],
+      "additional": []
+    },
+    "testing": {
+      "unit": null,
+      "e2e": null,
+      "additional": []
+    },
+    "monitoring": {
+      "errorTracking": null,
+      "analytics": null,
+      "additional": []
+    },
+    "infrastructure": {
+      "hosting": null,
+      "images": null,
+      "additional": []
+    },
+    "tools": {
+      "codeAssistant": "Cursor",
+      "additional": []
+    }
+  },
+  "workflow": {
+    "description": "1. We brainstorm on a feature or I tell you a bug I want to fix\n2. You ask all the clarifying questions until you are sure you understand\n3. You create a discovery prompt for Cursor gathering all the information you need to create a great execution plan (including file names, function names, structure and any other information)\n4. Once I return Cursor's response you can ask for any missing information I need to provide manually\n5. You break the task into phases (if not needed just make it 1 phase)\n6. You create Cursor prompts for each phase, asking Cursor to return a status report on what changes it makes in each phase so that you can catch mistakes\n7. I will pass on the phase prompts to Cursor and return the status reports"
+  }
+}
