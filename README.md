@@ -2,6 +2,8 @@
 
 A React-based proposal and quote generator application with a right-to-left (RTL) Hebrew interface.
 
+**Repository:** [github.com/Kobi-LeadsLords/proposal-generator](https://github.com/Kobi-LeadsLords/proposal-generator)
+
 ## Features
 
 - **Quote creation** – Build professional quotes with client and developer details
@@ -84,20 +86,14 @@ src/
 - **Vite** – `vite.config.ts` (port 8085, `@/` alias to `src/`)
 - **Maestro** – `maestro/maestro.config.json` for project and workflow metadata
 
-## Pushing to GitHub
+## Repository
 
-The project is already a Git repo with an initial commit. To push to GitHub:
-
-1. Create a new repository on GitHub (do not initialize with README).
-2. Add the remote and push:
+Clone the project:
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/proposal-generator.git
-git branch -M main
-git push -u origin main
+git clone https://github.com/Kobi-LeadsLords/proposal-generator.git
+cd proposal-generator
 ```
-
-Replace `YOUR_USERNAME` with your GitHub username.
 
 ## License
 
