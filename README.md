@@ -84,6 +84,21 @@ src/
 - **Vite** – `vite.config.ts` (port 8085, `@/` alias to `src/`)
 - **Maestro** – `maestro/maestro.config.json` for project and workflow metadata
 
+## Pushing to GitHub
+
+The project is already a Git repo with an initial commit. To push to GitHub:
+
+1. Create a new repository on GitHub (do not initialize with README).
+2. Add the remote and push:
+
+```bash
+git remote add origin https://github.com/YOUR_USERNAME/proposal-generator.git
+git branch -M main
+git push -u origin main
+```
+
+Replace `YOUR_USERNAME` with your GitHub username.
+
 ## License
 
 Private project.
