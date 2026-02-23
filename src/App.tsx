@@ -22,6 +22,7 @@ function getTabForDoc(
 }
 
 function AuthenticatedContent() {
+  const { logout } = useAuth();
   const { editingDoc, setEditingDoc } = useEdit();
   const [activeTab, setActiveTab] = useState<TabId>('my-proposals');
 
@@ -49,7 +50,20 @@ function AuthenticatedContent() {
   if (activeTab === 'my-proposals') {
     return (
       <div className="min-h-screen">
-        <div className="print:hidden">
+        <div className="print:hidden border-b border-slate-200">
+          <header
+            className="flex justify-between items-center px-4 py-2"
+            dir="rtl"
+          >
+            <h1 className="text-lg font-semibold">מערכת הצעות מחיר</h1>
+            <button
+              type="button"
+              onClick={() => void logout()}
+              className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-3 py-1.5 rounded-md transition-colors"
+            >
+              התנתק
+            </button>
+          </header>
           <TabNav activeTab={activeTab} onTabChange={onTabChange} />
         </div>
         <MyProposalsPage onEditItem={onEditItem} />
@@ -65,7 +79,20 @@ function AuthenticatedContent() {
 
   return (
     <div className="min-h-screen">
-      <div className="print:hidden">
+      <div className="print:hidden border-b border-slate-200">
+        <header
+          className="flex justify-between items-center px-4 py-2"
+          dir="rtl"
+        >
+          <h1 className="text-lg font-semibold">מערכת הצעות מחיר</h1>
+          <button
+            type="button"
+            onClick={() => void logout()}
+            className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-3 py-1.5 rounded-md transition-colors"
+          >
+            התנתק
+          </button>
+        </header>
         <TabNav activeTab={activeTab} onTabChange={onTabChange} />
       </div>
       {isProposal ? (
