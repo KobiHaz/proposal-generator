@@ -6,6 +6,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { QuoteData } from './types';
 
+function parseNumberInput(value: string): number {
+  const trimmed = value.trim();
+  return trimmed === '' ? 0 : Number(trimmed) || 0;
+}
+
 interface QuoteFormProps {
     data: QuoteData;
     onChange: (data: QuoteData) => void;
@@ -33,7 +38,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>שם המפתח</Label>
+                            <Label>שם הספק</Label>
                             <Input
                                 value={data.developerName}
                                 onChange={(e) => handleChange('developerName', e.target.value)}
@@ -97,7 +102,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                                 <Input
                                     type="number"
                                     value={data.fixedPriceAmount || ''}
-                                    onChange={(e) => handleChange('fixedPriceAmount', Number(e.target.value))}
+                                    onChange={(e) => handleChange('fixedPriceAmount', parseNumberInput(e.target.value))}
                                 />
                             </div>
                             <div className="grid grid-cols-3 gap-3">
@@ -106,7 +111,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                                     <Input
                                         type="number"
                                         value={data.advancePaymentPercent}
-                                        onChange={(e) => handleChange('advancePaymentPercent', Number(e.target.value))}
+                                        onChange={(e) => handleChange('advancePaymentPercent', parseNumberInput(e.target.value))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -114,7 +119,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                                     <Input
                                         type="number"
                                         value={data.betaPaymentPercent}
-                                        onChange={(e) => handleChange('betaPaymentPercent', Number(e.target.value))}
+                                        onChange={(e) => handleChange('betaPaymentPercent', parseNumberInput(e.target.value))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -122,7 +127,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                                     <Input
                                         type="number"
                                         value={data.finalPaymentPercent}
-                                        onChange={(e) => handleChange('finalPaymentPercent', Number(e.target.value))}
+                                        onChange={(e) => handleChange('finalPaymentPercent', parseNumberInput(e.target.value))}
                                     />
                                 </div>
                             </div>
@@ -136,7 +141,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                                 <Input
                                     type="number"
                                     value={data.hourlyRate || ''}
-                                    onChange={(e) => handleChange('hourlyRate', Number(e.target.value))}
+                                    onChange={(e) => handleChange('hourlyRate', parseNumberInput(e.target.value))}
                                 />
                             </div>
                             <div className="space-y-2">
@@ -144,7 +149,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                                 <Input
                                     type="number"
                                     value={data.estimatedHours || ''}
-                                    onChange={(e) => handleChange('estimatedHours', Number(e.target.value))}
+                                    onChange={(e) => handleChange('estimatedHours', parseNumberInput(e.target.value))}
                                 />
                             </div>
                         </div>
@@ -163,7 +168,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                             <Input
                                 type="number"
                                 value={data.monthlyRetainerAmount || ''}
-                                onChange={(e) => handleChange('monthlyRetainerAmount', Number(e.target.value))}
+                                onChange={(e) => handleChange('monthlyRetainerAmount', parseNumberInput(e.target.value))}
                             />
                         </div>
                         <div className="space-y-2">
@@ -171,7 +176,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                             <Input
                                 type="number"
                                 value={data.supportHourlyRate || ''}
-                                onChange={(e) => handleChange('supportHourlyRate', Number(e.target.value))}
+                                onChange={(e) => handleChange('supportHourlyRate', parseNumberInput(e.target.value))}
                             />
                         </div>
                         <div className="space-y-2">
@@ -179,7 +184,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                             <Input
                                 type="number"
                                 value={data.warrantyDays}
-                                onChange={(e) => handleChange('warrantyDays', Number(e.target.value))}
+                                onChange={(e) => handleChange('warrantyDays', parseNumberInput(e.target.value))}
                             />
                         </div>
                     </div>
@@ -196,7 +201,7 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data, onChange }) => {
                         <Input
                             type="number"
                             value={data.timelineDays}
-                            onChange={(e) => handleChange('timelineDays', Number(e.target.value))}
+                            onChange={(e) => handleChange('timelineDays', parseNumberInput(e.target.value))}
                         />
                     </div>
                 </CardContent>
