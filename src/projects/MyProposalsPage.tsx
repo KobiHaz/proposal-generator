@@ -38,6 +38,7 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<DocItem[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const loadItems = useCallback(async (): Promise<DocItem[]> => {
     if (!user?.uid) return [];
@@ -77,13 +78,21 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
   const handleDelete = async (e: React.MouseEvent, doc: DocItem) => {
     e.stopPropagation();
     if (!window.confirm('האם למחוק?')) return;
-    if (isProposal(doc)) {
-      await deleteProposal(doc.id);
-    } else {
-      await deleteAgreement(doc.id);
+    setDeletingId(doc.id);
+    setError(null);
+    try {
+      if (isProposal(doc)) {
+        await deleteProposal(doc.id);
+      } else {
+        await deleteAgreement(doc.id);
+      }
+      const merged = await loadItems();
+      setItems(merged);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'לא ניתן למחוק');
+    } finally {
+      setDeletingId(null);
     }
-    const merged = await loadItems();
-    setItems(merged);
   };
 
   const handleClick = (doc: DocItem) => {
@@ -212,10 +221,15 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
                     <button
                       type="button"
                       onClick={(e) => handleDelete(e, doc)}
-                      className="p-1.5 rounded text-muted-foreground hover:text-destructive hover:bg-muted transition-colors"
+                      disabled={deletingId === doc.id}
+                      className="p-1.5 rounded text-muted-foreground hover:text-destructive hover:bg-muted transition-colors disabled:opacity-50"
                       aria-label="מחק"
                     >
-                      <Trash2 size={16} />
+                      {deletingId === doc.id ? (
+                        <span className="inline-block h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
                     </button>
                   </td>
                 </tr>
