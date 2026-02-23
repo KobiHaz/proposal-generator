@@ -86,8 +86,7 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
       } else {
         await deleteAgreement(doc.id);
       }
-      const merged = await loadItems();
-      setItems(merged);
+      setItems((prev) => prev.filter((item) => item.id !== doc.id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'לא ניתן למחוק');
     } finally {
