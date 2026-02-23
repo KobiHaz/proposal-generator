@@ -6,6 +6,12 @@ A React-based proposal and quote generator application with a right-to-left (RTL
 
 ## Features
 
+- **Four document types** – Tab-based navigation between:
+  - **הצעת מחיר CRM** – Price proposal for CRM projects
+  - **הצעת מחיר אוטומציות** – Price proposal for automation projects
+  - **הסכם CRM** – Engagement agreement for CRM (development)
+  - **הסכם אוטומציות** – Engagement agreement for automation (integration)
+- **Price proposals** – Flexible structure: intro, technical spec, base package, add-ons, pricing table, blockers
 - **Quote creation** – Build professional quotes with client and developer details
 - **Payment models** – Support for fixed price and hourly rate pricing
 - **Fixed price** – Advance, beta, and final payment percentages
@@ -75,10 +81,15 @@ src/
 ├── components/
 │   └── ui/            # Reusable UI components (Button, Card, Input, etc.)
 └── projects/
-    ├── types.ts       # QuoteData and related types
-    ├── QuotePage.tsx  # Main quote page
-    ├── QuoteForm.tsx  # Quote form
-    └── QuoteDocument.tsx # Rendered quote document
+    ├── types.ts         # QuoteData, ProposalData, and related types
+    ├── presets.ts       # Agreement presets (CRM vs Automation)
+    ├── TabNav.tsx       # Four-tab navigation
+    ├── QuotePage.tsx    # Agreement page
+    ├── QuoteForm.tsx    # Agreement form
+    ├── QuoteDocument.tsx # Agreement document
+    ├── ProposalPage.tsx   # Price proposal page
+    ├── ProposalForm.tsx   # Price proposal form
+    └── ProposalDocument.tsx # Price proposal document
 ```
 
 ## Configuration
