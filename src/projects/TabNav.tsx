@@ -1,9 +1,15 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export type TabId = 'proposal-crm' | 'proposal-automation' | 'agreement-crm' | 'agreement-automation';
+export type TabId =
+  | 'my-proposals'
+  | 'proposal-crm'
+  | 'proposal-automation'
+  | 'agreement-crm'
+  | 'agreement-automation';
 
 const TABS: { id: TabId; label: string }[] = [
+  { id: 'my-proposals', label: 'ההצעות שלי' },
   { id: 'proposal-crm', label: 'הצעת מחיר CRM' },
   { id: 'proposal-automation', label: 'הצעת מחיר אוטומציות' },
   { id: 'agreement-crm', label: 'הסכם CRM' },
