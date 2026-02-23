@@ -5,7 +5,11 @@ import { QuoteData } from './types';
 import { Button } from '@/components/ui/button';
 import { Printer } from 'lucide-react';
 
-const QuotePage: React.FC = () => {
+interface QuotePageProps {
+  variant?: 'crm' | 'automation';
+}
+
+const QuotePage: React.FC<QuotePageProps> = ({ variant = 'crm' }) => {
     const [data, setData] = useState<QuoteData>({
         date: new Date().toISOString().split('T')[0],
         clientName: '',
