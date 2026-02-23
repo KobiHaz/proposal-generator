@@ -23,17 +23,17 @@ interface TabNavProps {
 
 export const TabNav: React.FC<TabNavProps> = ({ activeTab, onTabChange }) => {
   return (
-    <nav className="flex gap-1 border-b border-slate-200" dir="rtl">
+    <nav className="flex gap-1 border-b border-border bg-background" dir="rtl">
       {TABS.map((tab) => (
         <button
           key={tab.id}
           type="button"
           onClick={() => onTabChange(tab.id)}
           className={cn(
-            'px-4 py-3 text-sm font-medium rounded-t-md transition-colors',
+            'px-4 py-3 text-sm font-medium rounded-t-md transition-colors -mb-px',
             activeTab === tab.id
-              ? 'bg-white border border-b-0 border-slate-200 text-slate-900 -mb-px'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              ? 'text-primary border-b-2 border-primary bg-white'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
           )}
         >
           {tab.label}
