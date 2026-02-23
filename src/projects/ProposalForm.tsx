@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { ProposalData } from './types';
 import { Plus, Trash2 } from 'lucide-react';
 
@@ -340,7 +339,7 @@ export const ProposalForm: React.FC<ProposalFormProps> = ({ data, onChange }) =>
           <Input
             placeholder="המחירים אינם כוללים מע״מ"
             value={data.taxNote ?? ''}
-            onChange={(e) => handleChange('taxNote', e.target.value || undefined)}
+            onChange={(e) => handleChange('taxNote', e.target.value)}
           />
         </CardContent>
       </Card>
