@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from 'react';
@@ -49,7 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signOut(auth);
   }, []);
 
-  const value: AuthContextValue = { user, loading, signIn, signUp, logout };
+  const value = useMemo<AuthContextValue>(
+    () => ({ user, loading, signIn, signUp, logout }),
+    [user, loading, signIn, signUp, logout]
+  );
 
   return (
     <AuthContext.Provider value={value}>

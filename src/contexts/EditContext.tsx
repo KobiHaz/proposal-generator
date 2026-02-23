@@ -1,7 +1,7 @@
 import {
   createContext,
-  useCallback,
   useContext,
+  useMemo,
   useState,
   type ReactNode,
 } from 'react';
@@ -24,7 +24,10 @@ const EditContext = createContext<EditContextValue | null>(null);
 
 export function EditProvider({ children }: { children: ReactNode }) {
   const [editingDoc, setEditingDoc] = useState<EditingDoc | null>(null);
-  const value: EditContextValue = { editingDoc, setEditingDoc };
+  const value = useMemo(
+    () => ({ editingDoc, setEditingDoc }),
+    [editingDoc, setEditingDoc]
+  );
   return (
     <EditContext.Provider value={value}>
       {children}
