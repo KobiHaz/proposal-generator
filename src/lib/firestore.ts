@@ -8,6 +8,7 @@ import {
   deleteDoc,
   query,
   where,
+  orderBy,
   Timestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -146,7 +147,8 @@ export async function saveAgreement(
 export async function listProposals(userId: string): Promise<SavedProposal[]> {
   const q = query(
     collection(db, 'proposals'),
-    where('userId', '==', userId)
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc')
   );
   const snap = await getDocs(q);
   const docs = snap.docs.map((d) => {
@@ -161,13 +163,14 @@ export async function listProposals(userId: string): Promise<SavedProposal[]> {
       data: extractProposalData(raw),
     };
   });
-  return docs.sort((a, b) => b.updatedAt.toMillis() - a.updatedAt.toMillis());
+  return docs;
 }
 
 export async function listAgreements(userId: string): Promise<SavedAgreement[]> {
   const q = query(
     collection(db, 'agreements'),
-    where('userId', '==', userId)
+    where('userId', '==', userId),
+    orderBy('updatedAt', 'desc')
   );
   const snap = await getDocs(q);
   const docs = snap.docs.map((d) => {
@@ -182,7 +185,7 @@ export async function listAgreements(userId: string): Promise<SavedAgreement[]> 
       data: extractQuoteData(raw),
     };
   });
-  return docs.sort((a, b) => b.updatedAt.toMillis() - a.updatedAt.toMillis());
+  return docs;
 }
 
 export async function deleteProposal(docId: string): Promise<void> {
