@@ -5,9 +5,10 @@ import { LoginPage } from './projects/LoginPage';
 import QuotePage from './projects/QuotePage';
 import ProposalPage from './projects/ProposalPage';
 import { TabNav, type TabId } from './projects/TabNav';
+import type { ProposalData } from './projects/types';
 
 function AuthenticatedContent() {
-  const { setEditingDoc } = useEdit();
+  const { editingDoc, setEditingDoc } = useEdit();
   const [activeTab, setActiveTab] = useState<TabId>('my-proposals');
 
   const onTabChange = useCallback(
@@ -43,7 +44,15 @@ function AuthenticatedContent() {
         <TabNav activeTab={activeTab} onTabChange={onTabChange} />
       </div>
       {isProposal ? (
-        <ProposalPage variant={variant} />
+        <ProposalPage
+          variant={variant}
+          {...(editingDoc?.type === 'proposal' && editingDoc.variant === variant
+            ? {
+                initialData: editingDoc.data as ProposalData,
+                docId: editingDoc.id,
+              }
+            : {})}
+        />
       ) : (
         <QuotePage variant={variant} />
       )}

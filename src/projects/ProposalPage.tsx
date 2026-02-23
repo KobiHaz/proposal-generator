@@ -1,30 +1,74 @@
 import React, { useState } from 'react';
 import { ProposalForm } from './ProposalForm';
 import { ProposalDocument } from './ProposalDocument';
-import { defaultProposalData } from './types';
+import { defaultProposalData, type ProposalData } from './types';
 import { Button } from '@/components/ui/button';
-import { Printer } from 'lucide-react';
+import { Printer, Save } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useEdit } from '@/contexts/EditContext';
+import { saveProposal } from '@/lib/firestore';
 
 interface ProposalPageProps {
   variant: 'crm' | 'automation';
+  initialData?: ProposalData;
+  docId?: string;
 }
 
-const ProposalPage: React.FC<ProposalPageProps> = ({ variant }) => {
-  const [data, setData] = useState(defaultProposalData);
+const ProposalPage: React.FC<ProposalPageProps> = ({
+  variant,
+  initialData,
+  docId: initialDocId,
+}) => {
+  const { user } = useAuth();
+  const { setEditingDoc } = useEdit();
+  const [data, setData] = useState<ProposalData>(
+    () => initialData ?? defaultProposalData
+  );
+  const [docId, setDocId] = useState<string | null>(() => initialDocId ?? null);
+  const [saveMessage, setSaveMessage] = useState<'success' | 'error' | null>(
+    null
+  );
 
   const handlePrint = () => {
     window.print();
   };
 
+  const handleSave = async () => {
+    if (!user?.uid) return;
+    setSaveMessage(null);
+    try {
+      const id = await saveProposal(user.uid, variant, data, docId ?? undefined);
+      if (!docId) setDocId(id);
+      setEditingDoc(null);
+      setSaveMessage('success');
+    } catch {
+      setSaveMessage('error');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100" dir="rtl">
       <header className="bg-white border-b sticky top-0 z-10 print:hidden shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <h1 className="text-xl font-bold text-gray-800">מערכת הצעות מחיר</h1>
-          <Button onClick={handlePrint} className="gap-2">
-            <Printer size={16} />
-            הדפסה / שמירה כ-PDF
-          </Button>
+          <div className="flex items-center gap-2">
+            {saveMessage === 'success' && (
+              <span className="text-sm text-green-600">נשמר בהצלחה</span>
+            )}
+            {saveMessage === 'error' && (
+              <span className="text-sm text-red-600">
+                שגיאה בשמירה, נסה שוב
+              </span>
+            )}
+            <Button onClick={handleSave} variant="outline" className="gap-2">
+              <Save size={16} />
+              שמור
+            </Button>
+            <Button onClick={handlePrint} className="gap-2">
+              <Printer size={16} />
+              הדפסה / שמירה כ-PDF
+            </Button>
+          </div>
         </div>
       </header>
 
