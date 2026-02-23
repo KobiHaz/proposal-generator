@@ -18,6 +18,10 @@ function getTabForDoc(
       return variant === 'automation' ? 'proposal-automation' : 'proposal-crm';
     case 'agreement':
       return variant === 'automation' ? 'agreement-automation' : 'agreement-crm';
+    default: {
+      const _: never = type;
+      return _;
+    }
   }
 }
 
@@ -49,17 +53,17 @@ function AuthenticatedContent() {
 
   if (activeTab === 'my-proposals') {
     return (
-      <div className="min-h-screen">
-        <div className="print:hidden border-b border-slate-200">
+      <div className="min-h-screen bg-muted/20">
+        <div className="print:hidden border-b border-border bg-secondary/30">
           <header
-            className="flex justify-between items-center px-4 py-2"
+            className="flex justify-between items-center px-6 py-3"
             dir="rtl"
           >
-            <h1 className="text-lg font-semibold">מערכת הצעות מחיר</h1>
+            <h1 className="text-xl font-semibold text-primary">מערכת הצעות והסכמים</h1>
             <button
               type="button"
               onClick={() => void logout()}
-              className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-3 py-1.5 rounded-md transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted px-3 py-2 rounded-md transition-colors duration-200"
             >
               התנתק
             </button>
@@ -78,17 +82,17 @@ function AuthenticatedContent() {
       : 'crm';
 
   return (
-    <div className="min-h-screen">
-      <div className="print:hidden border-b border-slate-200">
+    <div className="min-h-screen bg-muted/20">
+      <div className="print:hidden border-b border-border bg-secondary/30">
         <header
-          className="flex justify-between items-center px-4 py-2"
+          className="flex justify-between items-center px-6 py-3"
           dir="rtl"
         >
-          <h1 className="text-lg font-semibold">מערכת הצעות מחיר</h1>
+          <h1 className="text-xl font-semibold text-primary">מערכת הצעות והסכמים</h1>
           <button
             type="button"
             onClick={() => void logout()}
-            className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-3 py-1.5 rounded-md transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted px-3 py-2 rounded-md transition-colors duration-200"
           >
             התנתק
           </button>
