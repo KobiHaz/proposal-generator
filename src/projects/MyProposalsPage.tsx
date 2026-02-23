@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   listProposals,
   listAgreements,
+  deleteProposal,
+  deleteAgreement,
   type SavedProposal,
   type SavedAgreement,
 } from '@/lib/firestore';
@@ -34,20 +37,24 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<DocItem[]>([]);
 
+  const loadItems = useCallback(async (): Promise<DocItem[]> => {
+    if (!user?.uid) return [];
+    const [proposals, agreements] = await Promise.all([
+      listProposals(user.uid),
+      listAgreements(user.uid),
+    ]);
+    return [...proposals, ...agreements].sort(
+      (a, b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0)
+    );
+  }, [user?.uid]);
+
   useEffect(() => {
     if (!user?.uid) return;
     let cancelled = false;
     setLoading(true);
-    Promise.all([
-      listProposals(user.uid),
-      listAgreements(user.uid),
-    ])
-      .then(([proposals, agreements]) => {
-        if (cancelled) return;
-        const merged: DocItem[] = [...proposals, ...agreements].sort(
-          (a, b) => (b.updatedAt?.toMillis?.() ?? 0) - (a.updatedAt?.toMillis?.() ?? 0)
-        );
-        setItems(merged);
+    loadItems()
+      .then((merged) => {
+        if (!cancelled) setItems(merged);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -55,7 +62,19 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
     return () => {
       cancelled = true;
     };
-  }, [user?.uid]);
+  }, [user?.uid, loadItems]);
+
+  const handleDelete = async (e: React.MouseEvent, doc: DocItem) => {
+    e.stopPropagation();
+    if (!window.confirm('האם למחוק?')) return;
+    if (isProposal(doc)) {
+      await deleteProposal(doc.id);
+    } else {
+      await deleteAgreement(doc.id);
+    }
+    const merged = await loadItems();
+    setItems(merged);
+  };
 
   const handleClick = (doc: DocItem) => {
     const type = isProposal(doc) ? 'proposal' : 'agreement';
@@ -99,6 +118,7 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
               <th className="text-right py-3 px-4 font-medium">גרסה</th>
               <th className="text-right py-3 px-4 font-medium">נמען / לקוח</th>
               <th className="text-right py-3 px-4 font-medium">תאריך</th>
+              <th className="w-12 py-3 px-4" aria-label="מחק" />
             </tr>
           </thead>
           <tbody>
@@ -123,6 +143,16 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
                       month: '2-digit',
                       day: '2-digit',
                     })}
+                  </td>
+                  <td className="py-3 px-4">
+                    <button
+                      type="button"
+                      onClick={(e) => handleDelete(e, doc)}
+                      className="p-1.5 rounded text-muted-foreground hover:text-destructive hover:bg-muted transition-colors"
+                      aria-label="מחק"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </td>
                 </tr>
               );
