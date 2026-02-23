@@ -8,7 +8,6 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   Timestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -44,6 +43,31 @@ function extractProposalData(raw: Record<string, unknown>): ProposalData {
   return data as unknown as ProposalData;
 }
 
+/** Recursively strip undefined values - Firestore rejects them */
+function stripUndefined<T>(obj: T): T {
+  if (obj === undefined) return obj;
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) {
+    return obj.map((item) => stripUndefined(item)) as unknown as T;
+  }
+  const result: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+    if (v !== undefined) result[k] = stripUndefined(v);
+  }
+  return result as T;
+}
+
+const SAVE_TIMEOUT_MS = 20_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
 function extractQuoteData(raw: Record<string, unknown>): QuoteData {
   const { userId, variant, createdAt, updatedAt, ...data } = raw;
   void userId;
@@ -60,12 +84,29 @@ export async function saveProposal(
   docId?: string
 ): Promise<string> {
   const now = Timestamp.now();
-  const payload = { userId, variant, createdAt: now, updatedAt: now, ...data };
+  const payload = stripUndefined({
+    userId,
+    variant,
+    createdAt: now,
+    updatedAt: now,
+    ...data,
+  });
   if (docId) {
-    await updateDoc(doc(db, 'proposals', docId), { ...data, updatedAt: now });
+    await withTimeout(
+      updateDoc(
+        doc(db, 'proposals', docId),
+        stripUndefined({ ...data, updatedAt: now }) as Record<string, unknown>
+      ),
+      SAVE_TIMEOUT_MS,
+      'saveProposal updateDoc'
+    );
     return docId;
   }
-  const ref = await addDoc(collection(db, 'proposals'), payload);
+  const ref = await withTimeout(
+    addDoc(collection(db, 'proposals'), payload),
+    SAVE_TIMEOUT_MS,
+    'saveProposal addDoc'
+  );
   return ref.id;
 }
 
@@ -76,23 +117,39 @@ export async function saveAgreement(
   docId?: string
 ): Promise<string> {
   const now = Timestamp.now();
-  const payload = { userId, variant, createdAt: now, updatedAt: now, ...data };
+  const payload = stripUndefined({
+    userId,
+    variant,
+    createdAt: now,
+    updatedAt: now,
+    ...data,
+  });
   if (docId) {
-    await updateDoc(doc(db, 'agreements', docId), { ...data, updatedAt: now });
+    await withTimeout(
+      updateDoc(
+        doc(db, 'agreements', docId),
+        stripUndefined({ ...data, updatedAt: now }) as Record<string, unknown>
+      ),
+      SAVE_TIMEOUT_MS,
+      'saveAgreement updateDoc'
+    );
     return docId;
   }
-  const ref = await addDoc(collection(db, 'agreements'), payload);
+  const ref = await withTimeout(
+    addDoc(collection(db, 'agreements'), payload),
+    SAVE_TIMEOUT_MS,
+    'saveAgreement addDoc'
+  );
   return ref.id;
 }
 
 export async function listProposals(userId: string): Promise<SavedProposal[]> {
   const q = query(
     collection(db, 'proposals'),
-    where('userId', '==', userId),
-    orderBy('updatedAt', 'desc')
+    where('userId', '==', userId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => {
+  const docs = snap.docs.map((d) => {
     const raw = d.data() as Record<string, unknown>;
     const { userId: u, variant: v, createdAt: c, updatedAt: ua } = raw;
     return {
@@ -104,16 +161,16 @@ export async function listProposals(userId: string): Promise<SavedProposal[]> {
       data: extractProposalData(raw),
     };
   });
+  return docs.sort((a, b) => b.updatedAt.toMillis() - a.updatedAt.toMillis());
 }
 
 export async function listAgreements(userId: string): Promise<SavedAgreement[]> {
   const q = query(
     collection(db, 'agreements'),
-    where('userId', '==', userId),
-    orderBy('updatedAt', 'desc')
+    where('userId', '==', userId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => {
+  const docs = snap.docs.map((d) => {
     const raw = d.data() as Record<string, unknown>;
     const { userId: u, variant: v, createdAt: c, updatedAt: ua } = raw;
     return {
@@ -125,6 +182,7 @@ export async function listAgreements(userId: string): Promise<SavedAgreement[]> 
       data: extractQuoteData(raw),
     };
   });
+  return docs.sort((a, b) => b.updatedAt.toMillis() - a.updatedAt.toMillis());
 }
 
 export async function deleteProposal(docId: string): Promise<void> {
