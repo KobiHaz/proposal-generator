@@ -137,16 +137,6 @@ const QuotePage: React.FC<QuotePageProps> = ({
       </header>
 
             <main className="max-w-[1600px] mx-auto p-8 gap-8 grid grid-cols-1 lg:grid-cols-12 print:block print:p-0">
-
-                {/* Helper text for print mode alignment */}
-                <style dangerouslySetInnerHTML={{
-                    __html: `
-          @media print {
-            @page { margin: 0; size: auto; }
-            body { -webkit-print-color-adjust: exact; background: white; }
-          }
-        `}} />
-
                 {/* Form Section - Takes 4 columns, hidden on print */}
                 <div className="lg:col-span-4 space-y-4 print:hidden h-fit sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)]">
                     <QuoteForm data={data} onChange={setData} />

@@ -118,17 +118,6 @@ const ProposalPage: React.FC<ProposalPageProps> = ({
       </header>
 
       <main className="max-w-[1600px] mx-auto p-8 gap-8 grid grid-cols-1 lg:grid-cols-12 print:block print:p-0">
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-          @media print {
-            @page { margin: 0; size: auto; }
-            body { -webkit-print-color-adjust: exact; background: white; }
-          }
-        `,
-          }}
-        />
-
         <div className="lg:col-span-4 space-y-4 print:hidden h-fit sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)]">
           <ProposalForm data={data} onChange={setData} />
         </div>
