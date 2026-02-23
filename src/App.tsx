@@ -5,7 +5,7 @@ import { LoginPage } from './projects/LoginPage';
 import QuotePage from './projects/QuotePage';
 import ProposalPage from './projects/ProposalPage';
 import { TabNav, type TabId } from './projects/TabNav';
-import type { ProposalData } from './projects/types';
+import type { ProposalData, QuoteData } from './projects/types';
 
 function AuthenticatedContent() {
   const { editingDoc, setEditingDoc } = useEdit();
@@ -54,7 +54,15 @@ function AuthenticatedContent() {
             : {})}
         />
       ) : (
-        <QuotePage variant={variant} />
+        <QuotePage
+          variant={variant}
+          {...(editingDoc?.type === 'agreement' && editingDoc.variant === variant
+            ? {
+                initialData: editingDoc.data as QuoteData,
+                docId: editingDoc.id,
+              }
+            : {})}
+        />
       )}
     </div>
   );
