@@ -1,5 +1,6 @@
 import React from 'react';
 import { QuoteData } from './types';
+import { agreementPresets } from './presets';
 import { cn } from '@/lib/utils';
 import {
     Calendar, User, Building2, Check, CreditCard,
@@ -8,10 +9,12 @@ import {
 } from 'lucide-react';
 
 interface QuoteDocumentProps {
-    data: QuoteData;
+  data: QuoteData;
+  variant?: 'crm' | 'automation';
 }
 
-export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data }) => {
+export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data, variant = 'crm' }) => {
+    const preset = agreementPresets[variant];
     return (
         <div className="w-[210mm] min-h-[297mm] mx-auto bg-white text-slate-800 shadow-2xl mb-8 text-right overflow-hidden relative print:shadow-none" dir="rtl">
 
@@ -27,7 +30,7 @@ export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data }) => {
                             הסכם התקשרות
                         </h1>
                     </div>
-                    <p className="text-lg text-slate-600 font-medium">לאספקת שירותי פיתוח ותחזוקת תוכנה</p>
+                    <p className="text-lg text-slate-600 font-medium">{preset.subtitle}</p>
 
                     <div className="absolute top-0 left-0 text-xs text-slate-400 border border-slate-200 p-2 rounded bg-slate-50 print:hidden">
                         מסמך עבודה
@@ -78,13 +81,13 @@ export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data }) => {
                 {/* Content Sections */}
                 <div className="space-y-8">
 
-                    <Section number="1" title="מהות השירות" icon={<CreditCard size={18} />}>
+                    <Section number="1" title={preset.section1Title} icon={<CreditCard size={18} />}>
                         <p className="leading-relaxed">
-                            המפתח יפתח עבור הלקוח מערכת CRM/אפליקציה (להלן: "המערכת") המבוססת על טכנולוגיית ענן ושירותי צד ג', בהתאם למסמך האפיון המפורט המצורף כנספח ב'.
+                            {preset.section1Content}
                         </p>
                     </Section>
 
-                    <Section number="2" title="שלב ההקמה (Development Phase)" icon={<Lock size={18} />}>
+                    <Section number="2" title={preset.section2Title} icon={<Lock size={18} />}>
                         <div className="grid gap-4">
                             <PaymentOption
                                 selected={data.paymentModel === 'fixed'}
@@ -162,7 +165,7 @@ export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data }) => {
                                 בעלות מלאה ללקוח
                             </p>
                             <p className="text-sm leading-relaxed">
-                                עם פירעון מלא של כל התשלומים, <span className="font-bold underline text-emerald-950">הלקוח יקבל בעלות מלאה ובלעדית</span> על קוד המקור של המערכת. המפתח מוותר על כל זכות קניינית במערכת לאחר מסירתה הסופית וקבלת התשלום, למעט שימוש בספריות קוד פתוח או רכיבי מדף קיימים.
+                                עם פירעון מלא של כל התשלומים, <span className="font-bold underline text-emerald-950">הלקוח יקבל בעלות מלאה ובלעדית</span> על {preset.section5Content}
                             </p>
                             <p className="text-xs mt-2 text-emerald-700 italic">
                                 * החרגת אחריות: במידה והלקוח יבצע שינוי כלשהו בקוד עצמאית, אחריות המפתח תפוג מיידית.

@@ -72,7 +72,7 @@ const QuotePage: React.FC<QuotePageProps> = ({ variant = 'crm' }) => {
                         תצוגה מקדימה (המסמך יודפס בגודל A4)
                     </div>
                     <div className="flex justify-center">
-                        <QuoteDocument data={data} />
+                        <QuoteDocument data={data} variant={variant} />
                     </div>
                 </div>
 
