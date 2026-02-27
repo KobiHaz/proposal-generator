@@ -1,0 +1,26 @@
+# Proposal Generator — Cursor Rules
+
+> **The vault is the only source of truth** — all content lives in the vault; the project only references it.
+
+## Quick Reference
+
+| Domain | Pattern |
+|--------|---------|
+| **Entities** | ProposalData, QuoteData, SavedProposal, SavedAgreement |
+| **Firestore** | proposals, agreements; userId-scoped; orderBy('updatedAt','desc') |
+| **Security** | userId immutability on update (Firestore rules) |
+| **RTL** | dir="rtl" on Hebrew containers |
+
+## Plan Lifecycle (Mandatory)
+
+1. **When finishing a task** — update the relevant docs:
+   - `04-knowledge/reference/proposal-generator-architecture.md` (what the code does)
+   - `04-knowledge/standards/proposal-generator-standards.md` (if a standard changed)
+2. **Completed plan** — suggest deleting the plan file
+3. **Before deleting** — ensure all lessons or important decisions were moved to Reference
+
+## Vault (single source)
+
+- Brief: `02-projects/proposal-generator/project.proposal-generator.md`
+- Reference: `04-knowledge/reference/proposal-generator-architecture.md`
+- Standards: `04-knowledge/standards/proposal-generator-standards.md`

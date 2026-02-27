@@ -16,5 +16,6 @@
         { "fieldPath": "updatedAt", "order": "DESCENDING" }
       ]
     }
-  ]
+  ],
+  "fieldOverrides": []
 }

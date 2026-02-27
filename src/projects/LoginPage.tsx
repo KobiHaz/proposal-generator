@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -12,21 +12,20 @@ const FIREBASE_ERROR_MESSAGES: Record<string, string> = {
   'auth/email-already-in-use': 'כתובת האימייל כבר רשומה במערכת',
   'auth/user-disabled': 'המשתמש הושבת',
   'auth/too-many-requests': 'יותר מדי ניסיונות – נסה שוב מאוחר יותר',
-  'auth/operation-not-allowed': 'הפעולה אינה מותרת',
+  'auth/operation-not-allowed': 'אימייל/סיסמה לא מופעל ב-Firebase Console. הפעל ב-Authentication → Sign-in method',
 };
 
 function getAuthErrorMessage(error: unknown): string {
   if (error && typeof error === 'object' && 'code' in error && typeof (error as { code: string }).code === 'string') {
     const code = (error as { code: string }).code;
-    return FIREBASE_ERROR_MESSAGES[code] ?? 'אירעה שגיאה. נסה שוב.';
+    return FIREBASE_ERROR_MESSAGES[code] ?? `שגיאה: ${code}. נסה שוב.`;
   }
-  return 'אירעה שגיאה. נסה שוב.';
+  const msg = error && typeof error === 'object' && 'message' in error ? String((error as { message: string }).message) : '';
+  return msg ? `שגיאה: ${msg}` : 'אירעה שגיאה. נסה שוב.';
 }
 
-type FormMode = 'sign-in' | 'sign-up';
-
 export function LoginPage() {
-  const [mode, setMode] = useState<FormMode>('sign-in');
+  const [showSignUp, setShowSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -39,7 +38,7 @@ export function LoginPage() {
     e.preventDefault();
     setError(null);
 
-    if (mode === 'sign-up') {
+    if (showSignUp) {
       if (password !== confirmPassword) {
         setError('הסיסמאות אינן תואמות');
         return;
@@ -48,10 +47,10 @@ export function LoginPage() {
 
     setSubmitting(true);
     try {
-      if (mode === 'sign-in') {
-        await signIn(email, password);
-      } else {
+      if (showSignUp) {
         await signUp(email, password);
+      } else {
+        await signIn(email, password);
       }
     } catch (err) {
       setError(getAuthErrorMessage(err));
@@ -60,39 +59,14 @@ export function LoginPage() {
     }
   };
 
-  const switchMode = (m: FormMode) => {
-    setMode(m);
-    setError(null);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center" dir="rtl">
-      <Card className="w-full max-w-md">
-        <CardHeader className="flex flex-row gap-2 p-4 border-b">
-          <button
-            type="button"
-            onClick={() => switchMode('sign-in')}
-            className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
-              mode === 'sign-in'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-            }`}
-          >
-            התחברות
-          </button>
-          <button
-            type="button"
-            onClick={() => switchMode('sign-up')}
-            className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
-              mode === 'sign-up'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-            }`}
-          >
-            הרשמה
-          </button>
-        </CardHeader>
-        <CardContent className="p-6">
+    <div className="min-h-screen bg-muted/40 flex items-center justify-center p-4" dir="rtl">
+      <Card className="w-full max-w-md shadow-md border-border overflow-hidden">
+        <div className="h-1 bg-primary" aria-hidden />
+        <CardContent className="p-8 pt-8">
+          <h2 className="text-xl font-semibold text-primary mb-6 text-center">
+            {showSignUp ? 'צור משתמש חדש (פעם אחת)' : 'התחברות'}
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4 text-right">
             <div className="space-y-2">
               <Label htmlFor="email">אימייל</Label>
@@ -113,12 +87,12 @@ export function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoComplete={mode === 'sign-in' ? 'current-password' : 'new-password'}
+                autoComplete={showSignUp ? 'new-password' : 'current-password'}
                 required
-                minLength={mode === 'sign-up' ? 6 : undefined}
+                minLength={showSignUp ? 6 : undefined}
               />
             </div>
-            {mode === 'sign-up' && (
+            {showSignUp && (
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">אימות סיסמה</Label>
                 <Input
@@ -137,8 +111,8 @@ export function LoginPage() {
                 {error}
               </p>
             )}
-            <Button type="submit" disabled={submitting} className="w-full">
-              {mode === 'sign-in' ? 'התחבר' : 'הרשם'}
+            <Button type="submit" disabled={submitting} className="w-full mt-1">
+              {showSignUp ? 'צור משתמש' : 'התחבר'}
             </Button>
           </form>
         </CardContent>

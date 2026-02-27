@@ -1,6 +1,0 @@
-#!/bin/bash
-# Maestro wrapper script - Auto-generated
-# This script calls the actual maestro script from the central library
-
-MAESTRO_PATH="/Users/kobihazout/.gemini/antigravity/projects/maestro"
-bash "$MAESTRO_PATH/maestro-regen.sh" "$@"

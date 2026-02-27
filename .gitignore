@@ -33,5 +33,9 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# Firebase service account (never commit!)
+*serviceAccount*.json
+*service-account*.json
+
 # TypeScript
 *.tsbuildinfo

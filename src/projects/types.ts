@@ -17,7 +17,7 @@ export interface ProposalData {
     notes: string;
   }>;
   blockers: string[];
-  taxNote?: string;
+  taxNote: string;
 }
 
 export const defaultProposalData: ProposalData = {
