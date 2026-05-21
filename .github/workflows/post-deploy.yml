@@ -1,0 +1,99 @@
+name: Post-Deploy — Cabinet Update via Jules
+
+# Trigger: any PR that merges to main/master
+on:
+  pull_request:
+    types: [closed]
+    branches: [main, master]
+
+jobs:
+  notify-jules:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      # 1. Checkout project to get diff
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Collect changed files
+      - name: Collect PR diff
+        id: diff
+        run: |
+          git diff \
+            ${{ github.event.pull_request.base.sha }} \
+            ${{ github.event.pull_request.merge_commit_sha }} \
+            --name-only > /tmp/changed_files.txt
+
+          # Check if security-sensitive files changed
+          SECURITY_SENSITIVE=false
+          if grep -qE "(auth|api|payment|pii|secret|password|token|env)" /tmp/changed_files.txt; then
+            SECURITY_SENSITIVE=true
+          fi
+
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          cat /tmp/changed_files.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "security_sensitive=$SECURITY_SENSITIVE" >> $GITHUB_OUTPUT
+
+      # 3. Open issue on KobiHaz/cabinet — Jules picks it up
+      - name: Open cabinet issue for Jules
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CABINET_TOKEN }}
+          script: |
+            const project = context.repo.repo;
+            const prTitle = `${{ github.event.pull_request.title }}`;
+            const prBody = `${{ github.event.pull_request.body }}` || '(no description)';
+            const prUrl = `${{ github.event.pull_request.html_url }}`;
+            const changedFiles = `${{ steps.diff.outputs.changed_files }}`;
+            const securitySensitive = `${{ steps.diff.outputs.security_sensitive }}` === 'true';
+
+            const securityNote = securitySensitive
+              ? '\n⚠️ **Security-sensitive files changed** — also update `knowledge/reference/' + project + '-security-audit.md` if relevant.'
+              : '';
+
+            const body = `## Post-Deploy Cabinet Update
+
+**Project:** \`${project}\`
+**PR:** [${prTitle}](${prUrl})
+**PR description:** ${prBody}
+
+### Files changed
+\`\`\`
+${changedFiles}
+\`\`\`
+${securityNote}
+
+### Instructions for Jules
+
+Please update the cabinet documentation based on what changed in this PR.
+
+Use this decision table:
+
+| What changed | Update this cabinet file |
+|---|---|
+| Architecture / API / data model | \`knowledge/reference/${project}-architecture.md\` |
+| New coding convention | \`knowledge/standards/${project}-standards.md\` |
+| Project status / active decisions | \`projects/${project}/project.${project}.md\` |
+| Security finding | \`knowledge/reference/${project}-security-audit.md\` |
+
+**Rules:**
+- Only update what actually changed — be specific (one clear sentence per change)
+- Do NOT create new files — only update existing ones
+- If nothing significant changed for cabinet docs, close this issue with a comment explaining why
+
+cc @google-labs-jules`;
+
+            await github.rest.issues.create({
+              owner: 'KobiHaz',
+              repo: 'cabinet',
+              title: `[post-deploy] ${project} — ${prTitle}`,
+              body: body,
+              labels: ['post-deploy', 'jules']
+            });
+
+            console.log('Issue created in KobiHaz/cabinet for Jules.');
