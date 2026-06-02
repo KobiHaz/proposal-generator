@@ -39,3 +39,7 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
+.cursor/
+.claude/settings.local.json
+.claude/worktrees/
+.fuse_hidden*

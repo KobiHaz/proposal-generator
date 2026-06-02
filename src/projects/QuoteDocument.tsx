@@ -1,12 +1,13 @@
 import React from 'react';
 import { QuoteData } from './types';
 import { agreementPresets } from './presets';
-import { cn } from '@/lib/utils';
+import { cn, formatDateDisplay } from '@/lib/utils';
 import {
   Calendar, User, Building2, Check, CreditCard,
   Shield, Lock, FileSignature,
   Clock, Ban, Globe, Info, Crown
 } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 
 interface QuoteDocumentProps {
   data: QuoteData;
@@ -18,20 +19,16 @@ export const QuoteDocument: React.FC<QuoteDocumentProps> = ({ data, variant = 'c
   return (
     <div className="w-[210mm] min-h-[297mm] mx-auto bg-white text-foreground shadow-2xl mb-8 text-right overflow-hidden relative print:shadow-none font-sans" dir="rtl">
 
-      {/* Header — sharp, editorial */}
-      <header className="h-16 bg-primary w-full top-0 absolute print:block flex items-center justify-between px-6 pl-[20mm] pr-[20mm]" dir="rtl">
-        <div className="flex items-center gap-3">
-          <div className="bg-white/95 rounded-sm px-3 py-1.5">
-            <img
-              src="https://somediadigital.com/wp-content/uploads/2023/01/logo.svg"
-              alt="SoMedia"
-              className="h-7 object-contain print:h-7"
-            />
-          </div>
+      {/* Header — same as ProposalDocument: date left, logo right */}
+      <header className="h-16 bg-primary w-full top-0 absolute print:block flex items-center justify-between px-6 pl-[20mm] pr-[20mm]" dir="ltr">
+        <div className="flex items-center gap-2 text-sm text-white/90" dir="ltr">
+          <Calendar size={14} className="text-white/70" strokeWidth={2.5} />
+          <span>{formatDateDisplay(data.date)}</span>
+        </div>
+        <div className="flex items-center gap-3" dir="rtl">
           <div className="w-px h-6 bg-white/20" aria-hidden />
-          <div className="flex items-center gap-2 text-sm text-white/90">
-            <Calendar size={14} className="text-white/70" strokeWidth={2.5} />
-            <span>נערך ונחתם: {data.date || '_________'}</span>
+          <div className="bg-white/95 rounded-sm px-3 py-1.5 text-black">
+            <Logo height="1.75rem" className="print:h-7" />
           </div>
         </div>
       </header>

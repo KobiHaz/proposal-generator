@@ -1,7 +1,8 @@
 import React from 'react';
 import { ProposalData } from './types';
-import { cn } from '@/lib/utils';
+import { cn, formatDateDisplay } from '@/lib/utils';
 import { Calendar, FileText, Package, Plus, DollarSign, AlertCircle } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 
 interface ProposalDocumentProps {
   data: ProposalData;
@@ -16,19 +17,15 @@ export const ProposalDocument: React.FC<ProposalDocumentProps> = ({ data, varian
       dir="rtl"
     >
       {/* Header — sharp, editorial */}
-      <header className="h-16 bg-primary w-full top-0 absolute print:block flex items-center justify-between px-6 pl-[20mm] pr-[20mm]" dir="rtl">
-        <div className="flex items-center gap-3">
-          <div className="bg-white/95 rounded-sm px-3 py-1.5">
-            <img
-              src="https://somediadigital.com/wp-content/uploads/2023/01/logo.svg"
-              alt="SoMedia"
-              className="h-7 object-contain print:h-7"
-            />
-          </div>
+      <header className="h-16 bg-primary w-full top-0 absolute print:block flex items-center justify-between px-6 pl-[20mm] pr-[20mm]" dir="ltr">
+        <div className="flex items-center gap-2 text-sm text-white/90" dir="ltr">
+          <Calendar size={14} className="text-white/70" strokeWidth={2.5} />
+          <span>{formatDateDisplay(data.date)}</span>
+        </div>
+        <div className="flex items-center gap-3" dir="rtl">
           <div className="w-px h-6 bg-white/20" aria-hidden />
-          <div className="flex items-center gap-2 text-sm text-white/90">
-            <Calendar size={14} className="text-white/70" strokeWidth={2.5} />
-            <span>{data.date || '_________'}</span>
+          <div className="bg-white/95 rounded-sm px-3 py-1.5 text-black">
+            <Logo height="1.75rem" className="print:h-7" />
           </div>
         </div>
       </header>
