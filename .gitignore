@@ -43,3 +43,6 @@ Thumbs.db
 .claude/settings.local.json
 .claude/worktrees/
 .fuse_hidden*
+
+# Brainstorming visual companion
+.superpowers/
