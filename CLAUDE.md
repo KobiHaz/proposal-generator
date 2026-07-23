@@ -1,5 +1,7 @@
 # CLAUDE.md — proposal-generator
 
+> 📋 **Active plan (2026-07-23):** [docs/plans/2026-07-23-graph-audit-followup.md](docs/plans/2026-07-23-graph-audit-followup.md) — graph-audit follow-up; review before structural changes.
+
 ## Purpose
 A React web app for creating, editing, and exporting business proposals and affiliate agreements
 (XSHEVA). Authenticated users build CRM/automation proposals and quotes, save them to Firestore,
