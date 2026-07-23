@@ -46,3 +46,5 @@ Thumbs.db
 
 # Brainstorming visual companion
 .superpowers/
+graphify-out/
+.claude/skills/
