@@ -3,10 +3,7 @@ import { QuoteForm } from './QuoteForm';
 import { QuoteDocument } from './QuoteDocument';
 import { QuoteData } from './types';
 import { Button } from '@/components/ui/button';
-import { FileDown, Save } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useEdit } from '@/contexts/EditContext';
-import { saveAgreement } from '@/lib/firestore';
+import { FileDown } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 
 const defaultQuoteData: QuoteData = {
@@ -37,21 +34,10 @@ const defaultQuoteData: QuoteData = {
 interface QuotePageProps {
   variant?: 'crm' | 'automation';
   initialData?: QuoteData;
-  docId?: string;
 }
 
-const QuotePage: React.FC<QuotePageProps> = ({
-  variant = 'crm',
-  initialData,
-  docId: initialDocId,
-}) => {
-  const { user } = useAuth();
-  const { setEditingDoc } = useEdit();
+const QuotePage: React.FC<QuotePageProps> = ({ variant = 'crm', initialData }) => {
   const [data, setData] = useState<QuoteData>(() => initialData ?? defaultQuoteData);
-  const [docId, setDocId] = useState<string | null>(() => initialDocId ?? null);
-  const [saveMessage, setSaveMessage] = useState<'success' | 'error' | 'timeout' | null>(null);
-  const [saveErrorDetail, setSaveErrorDetail] = useState<string>('');
-  const [isSaving, setIsSaving] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
 
@@ -72,29 +58,6 @@ const QuotePage: React.FC<QuotePageProps> = ({
     }
   };
 
-  const handleSave = async () => {
-    if (!user?.uid) {
-      setSaveMessage('error');
-      return;
-    }
-    setSaveMessage(null);
-    setSaveErrorDetail('');
-    setIsSaving(true);
-    try {
-      const id = await saveAgreement(user.uid, variant, data, docId ?? undefined);
-      if (!docId) setDocId(id);
-      setEditingDoc(null);
-      setSaveMessage('success');
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error('שגיאה בשמירת הסכם:', err);
-      setSaveErrorDetail(msg);
-      setSaveMessage(msg.includes('timed out') ? 'timeout' : 'error');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100" dir="rtl">
       {/* Header - Hidden on print */}
@@ -102,28 +65,6 @@ const QuotePage: React.FC<QuotePageProps> = ({
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <h1 className="text-xl font-bold text-gray-800">מערכת הצעות והסכמים</h1>
           <div className="flex items-center gap-2">
-            {saveMessage === 'success' && (
-              <span className="text-sm text-green-600">נשמר בהצלחה</span>
-            )}
-            {saveMessage === 'error' && (
-              <span className="text-sm text-red-600 max-w-xs truncate block" title={saveErrorDetail}>
-                {user ? `שגיאה: ${saveErrorDetail}` : 'יש להתחבר כדי לשמור'}
-              </span>
-            )}
-            {saveMessage === 'timeout' && (
-              <span className="text-sm text-red-600">
-                חיבור איטי – בדוק אינטרנט ונסה שוב
-              </span>
-            )}
-            <Button
-              onClick={handleSave}
-              variant="outline"
-              className="gap-2"
-              disabled={isSaving || !user?.uid}
-            >
-              <Save size={16} className={isSaving ? 'animate-pulse' : undefined} />
-              {isSaving ? 'שומר...' : 'שמור'}
-            </Button>
             <Button
               onClick={handleSavePdf}
               className="gap-2"
@@ -136,27 +77,26 @@ const QuotePage: React.FC<QuotePageProps> = ({
         </div>
       </header>
 
-            <main className="max-w-[1600px] mx-auto p-8 gap-8 grid grid-cols-1 lg:grid-cols-12 print:block print:p-0">
-                {/* Form Section - Takes 4 columns, hidden on print */}
-                <div className="lg:col-span-4 space-y-4 print:hidden h-fit sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)]">
-                    <QuoteForm data={data} onChange={setData} />
-                </div>
-
-                {/* Document Preview Section - Takes 8 columns, full width on print */}
-                <div className="lg:col-span-8 print:w-full print:absolute print:top-0 print:left-0 print:m-0">
-                    <div className="print:hidden mb-4 text-sm text-gray-500 text-center">
-                        תצוגה מקדימה (גודל A4)
-                    </div>
-                    <div className="flex justify-center">
-                        <div ref={pdfRef}>
-                            <QuoteDocument data={data} variant={variant} />
-                        </div>
-                    </div>
-                </div>
-
-            </main>
+      <main className="max-w-[1600px] mx-auto p-8 gap-8 grid grid-cols-1 lg:grid-cols-12 print:block print:p-0">
+        {/* Form Section - Takes 4 columns, hidden on print */}
+        <div className="lg:col-span-4 space-y-4 print:hidden h-fit sticky top-24 overflow-y-auto max-h-[calc(100vh-8rem)]">
+          <QuoteForm data={data} onChange={setData} />
         </div>
-    );
+
+        {/* Document Preview Section - Takes 8 columns, full width on print */}
+        <div className="lg:col-span-8 print:w-full print:absolute print:top-0 print:left-0 print:m-0">
+          <div className="print:hidden mb-4 text-sm text-gray-500 text-center">
+            תצוגה מקדימה (גודל A4)
+          </div>
+          <div className="flex justify-center">
+            <div ref={pdfRef}>
+              <QuoteDocument data={data} variant={variant} />
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 };
 
 export default QuotePage;

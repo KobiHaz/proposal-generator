@@ -3,34 +3,18 @@ import { ProposalForm } from './ProposalForm';
 import { ProposalDocument } from './ProposalDocument';
 import { defaultProposalData, type ProposalData } from './types';
 import { Button } from '@/components/ui/button';
-import { FileDown, Save } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useEdit } from '@/contexts/EditContext';
-import { saveProposal } from '@/lib/firestore';
+import { FileDown } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 
 interface ProposalPageProps {
   variant: 'crm' | 'automation';
   initialData?: ProposalData;
-  docId?: string;
 }
 
-const ProposalPage: React.FC<ProposalPageProps> = ({
-  variant,
-  initialData,
-  docId: initialDocId,
-}) => {
-  const { user } = useAuth();
-  const { setEditingDoc } = useEdit();
+const ProposalPage: React.FC<ProposalPageProps> = ({ variant, initialData }) => {
   const [data, setData] = useState<ProposalData>(
     () => initialData ?? defaultProposalData
   );
-  const [docId, setDocId] = useState<string | null>(() => initialDocId ?? null);
-  const [saveMessage, setSaveMessage] = useState<'success' | 'error' | 'timeout' | null>(
-    null
-  );
-  const [saveErrorDetail, setSaveErrorDetail] = useState<string>('');
-  const [isSaving, setIsSaving] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
 
@@ -52,59 +36,12 @@ const ProposalPage: React.FC<ProposalPageProps> = ({
     }
   };
 
-  const handleSave = async () => {
-    if (!user?.uid) {
-      setSaveMessage('error');
-      return;
-    }
-    setSaveMessage(null);
-    setSaveErrorDetail('');
-    setIsSaving(true);
-    try {
-      const id = await saveProposal(user.uid, variant, data, docId ?? undefined);
-      if (!docId) setDocId(id);
-      setEditingDoc(null);
-      setSaveMessage('success');
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error('שגיאה בשמירת הצעה:', err);
-      setSaveErrorDetail(msg);
-      setSaveMessage(msg.includes('timed out') ? 'timeout' : 'error');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100" dir="rtl">
       <header className="bg-white border-b sticky top-0 z-10 print:hidden shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <h1 className="text-xl font-bold text-gray-800">מערכת הצעות והסכמים</h1>
           <div className="flex items-center gap-2">
-            {saveMessage === 'success' && (
-              <span className="text-sm text-green-600">נשמר בהצלחה</span>
-            )}
-            {saveMessage === 'error' && (
-              <span className="text-sm text-red-600 max-w-xs truncate block" title={saveErrorDetail}>
-                {user
-                  ? `שגיאה: ${saveErrorDetail}`
-                  : 'יש להתחבר כדי לשמור'}
-              </span>
-            )}
-            {saveMessage === 'timeout' && (
-              <span className="text-sm text-red-600">
-                חיבור איטי – בדוק אינטרנט ונסה שוב
-              </span>
-            )}
-            <Button
-              onClick={handleSave}
-              variant="outline"
-              className="gap-2"
-              disabled={isSaving || !user?.uid}
-            >
-              <Save size={16} className={isSaving ? 'animate-pulse' : undefined} />
-              {isSaving ? 'שומר...' : 'שמור'}
-            </Button>
             <Button
               onClick={handleSavePdf}
               className="gap-2"
