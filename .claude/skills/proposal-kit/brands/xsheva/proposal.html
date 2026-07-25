@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>XSHEVA — הצעת מחיר</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --ink:#0a0a0a; --paper:#fff; --orange:#FF6B35; --muted:#555; --line:#e5e5e5; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Inter","Heebo",system-ui,sans-serif; color:var(--ink); background:#fff; }
+  .page { width:210mm; min-height:297mm; padding:20mm; position:relative; page-break-after:always; }
+  .page:last-child { page-break-after:auto; }
+  .kicker { color:var(--orange); font-weight:700; letter-spacing:.12em; font-size:12px; text-transform:uppercase; }
+  h1 { font-family:"Space Grotesk","Inter",sans-serif; font-size:34px; line-height:1.1; margin:14px 0; }
+  h2 { font-family:"Space Grotesk","Inter",sans-serif; font-size:19px; margin:0 0 10px; }
+  h2 .num { color:var(--orange); }
+  h3 { font-family:"Space Grotesk","Inter",sans-serif; font-size:14px; margin:14px 0 4px; }
+  p, li { font-size:13px; line-height:1.7; color:var(--muted); }
+  .rule { height:3px; width:52px; background:var(--orange); margin:10px 0 18px; }
+  section { margin-bottom:22px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; margin-top:6px; }
+  th { text-align:right; border-bottom:2px solid var(--orange); padding:8px; color:var(--ink); font-family:"Space Grotesk",sans-serif; }
+  td { padding:8px; border-bottom:1px solid var(--line); }
+  .cover { display:flex; flex-direction:column; justify-content:center; min-height:257mm; }
+  .cover .client { font-family:"Space Grotesk",sans-serif; font-size:22px; color:var(--ink); margin-top:8px; }
+  .confidential { position:absolute; bottom:14mm; left:20mm; right:20mm; font-size:10px; color:var(--muted);
+    border-top:1px solid var(--line); padding-top:8px; }
+  .callout { border-right:3px solid var(--orange); background:#faf7f5; padding:10px 14px; }
+</style>
+</head>
+<body>
+  <!-- COVER -->
+  <div class="page">
+    <div class="cover">
+      <div class="kicker">XSHEVA · Strategic AI Architecture</div>
+      <h1>{{TITLE}}</h1>
+      <div class="rule"></div>
+      <p>{{SUBTITLE}}</p>
+      <div class="client">{{CLIENT}}</div>
+    </div>
+    <div class="confidential">מוגש ע״י Kobi Hazout · XSHEVA · kobi@xsheva.com · מסמך סודי · תוקף: {{VALID_UNTIL}}</div>
+  </div>
+
+  <!-- INTRO + TECHNICAL + SECURITY -->
+  <div class="page">
+    <section>
+      <h2><span class="num">1.</span> מבוא ורציונל / רקע</h2>
+      <div class="rule"></div>
+      <p>{{INTRO}}</p>
+    </section>
+    <section>
+      <h2><span class="num">2.</span> הגישה הטכנית</h2>
+      <div class="rule"></div>
+      <h3>{{TECH_SUBSECTION_TITLE}}</h3>
+      <p>{{TECH_SUBSECTION_BODY}}</p>
+    </section>
+    <section>
+      <h2><span class="num">2.3</span> אבטחת מידע — מודל היברידי</h2>
+      <div class="callout">
+        <p>כל התשתית והעיבוד רצים self-hosted על VPS בשליטת הארגון; רק ניתוח הטקסט עצמו נשלח ל-Anthropic API. מסלול self-hosted מלא (Ollama) זמין בעת הצורך, מול פתרון ענן מלא.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ROADMAP + PAYMENT -->
+  <div class="page">
+    <section>
+      <h2><span class="num">5.</span> ROADMAP ולוח זמנים</h2>
+      <div class="rule"></div>
+      <table>
+        <thead><tr><th>Milestone</th><th>משך</th><th>כותרת / שלב</th></tr></thead>
+        <tbody>
+          <!-- Repeat per milestone: -->
+          <tr><td>{{MS_ID}}</td><td>{{MS_DURATION}}</td><td>{{MS_TITLE}}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2><span class="num">6.4</span> אבני תשלום</h2>
+      <div class="rule"></div>
+      <table>
+        <thead><tr><th>אבן</th><th>תנאי</th><th>אחוז</th><th>סכום (₪)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>חתימת הסכם</td><td>25%</td><td>{{PAY_1}}</td></tr>
+          <tr><td>2</td><td>Sign-off אפיון (שלב 0)</td><td>25%</td><td>{{PAY_2}}</td></tr>
+          <tr><td>3</td><td>Demo מוצלח</td><td>25%</td><td>{{PAY_3}}</td></tr>
+          <tr><td>4</td><td>אישור לקוח + Go-Live</td><td>25%</td><td>{{PAY_4}}</td></tr>
+          <tr><td><strong>סה״כ</strong></td><td></td><td><strong>100%</strong></td><td><strong>{{PAY_TOTAL}}</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;">כל המחירים אינם כוללים מע״מ.</p>
+    </section>
+  </div>
+
+  <!-- ROI + RISK + SLA -->
+  <div class="page">
+    <section>
+      <h2><span class="num">7.2</span> חישוב חיסכון שנתי</h2>
+      <div class="rule"></div>
+      <table>
+        <thead><tr><th>סעיף</th><th>ערך</th></tr></thead>
+        <tbody>
+          <tr><td>סה״כ שעות אנוש שנתיות</td><td>{{ROI_HOURS}}</td></tr>
+          <tr><td>עלות כוח אדם נוכחית</td><td>{{ROI_CURRENT_COST}}</td></tr>
+          <tr><td>חיסכון שעות (≈60% אוטומציה)</td><td>{{ROI_SAVINGS}}</td></tr>
+          <tr><td>ערך צמצום שגיאות ועיכובים</td><td>{{ROI_ERROR_VALUE}}</td></tr>
+          <tr><td><strong>חיסכון שנתי מוערך</strong></td><td><strong>{{ROI_TOTAL}}</strong></td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2><span class="num">8.</span> ניתוח סיכונים</h2>
+      <div class="rule"></div>
+      <table>
+        <thead><tr><th>#</th><th>סיכון</th><th>חומרה</th><th>מיטיגציה</th></tr></thead>
+        <tbody>
+          <tr><td>ס-1</td><td>{{RISK_1}}</td><td>{{RISK_1_SEV}}</td><td>{{RISK_1_MIT}}</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2><span class="num">9.</span> SLA ותנאי שירות</h2>
+      <div class="rule"></div>
+      <table>
+        <thead><tr><th>מדד</th><th>התחייבות</th></tr></thead>
+        <tbody>
+          <tr><td>זמן תגובה — תקלה קריטית (שעות עבודה)</td><td>4 שעות</td></tr>
+          <tr><td>זמן פתרון — תקלה קריטית</td><td>48 שעות</td></tr>
+          <tr><td>זמן תגובה — תקלה רגילה (שעות עבודה)</td><td>24 שעות</td></tr>
+          <tr><td>יעד Uptime (רכיבי אוטומציה בשליטתנו)</td><td>{{UPTIME}}</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</body>
+</html>

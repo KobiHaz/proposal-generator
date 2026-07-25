@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>הצעת מחיר — So Media</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --primary: hsl(158 75% 22%); --accent: hsl(330 85% 60%);
+    --fg: hsl(0 0% 9%); --muted: hsl(0 0% 40%); --border: hsl(158 20% 88%);
+    --secondary: hsl(158 30% 95%);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Heebo", system-ui, sans-serif; color: var(--fg); background:#fff; }
+  .page { width: 210mm; min-height: 297mm; background: #fff; position: relative; }
+  header.bar { height: 16mm; background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20mm; direction: ltr; font-size: 13px; }
+  header.bar .brand { font-weight: 700; letter-spacing: .04em; }
+  .accent-stripe { height: 2px; background: var(--accent); }
+  .content { padding: 20mm; padding-top: 10mm; }
+  .meta { font-size: 13px; margin-bottom: 28px; }
+  .meta strong { font-weight: 600; }
+  h1.title { font-family: "Lora", Georgia, serif; font-size: 22px; font-weight: 700;
+    border-bottom: 2px solid var(--primary); display: inline-block; padding-bottom: 6px; margin: 0 0 28px; }
+  section { margin-bottom: 26px; }
+  h2 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  h2 .num { color: var(--primary); font-family: "Lora", serif; margin-left: 6px; }
+  .body { color: var(--muted); font-size: 13px; line-height: 1.7;
+    padding-right: 16px; border-right: 2px solid hsl(158 75% 22% / .2); }
+  .body h3 { color: var(--fg); font-size: 13px; margin: 10px 0 4px; }
+  .body ul { margin: 4px 0; padding-right: 18px; }
+  .body li { margin: 2px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  th { background: var(--primary); color: #fff; text-align: right; padding: 10px;
+    border: 1px solid rgba(255,255,255,.2); font-weight: 600; }
+  td { padding: 10px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: hsl(158 30% 95% / .5); }
+  .tax-note { font-size: 11px; color: var(--muted); margin-top: 8px; padding-right: 16px; }
+  footer { margin-top: 40px; padding-top: 18px; border-top: 2px solid hsl(158 75% 22% / .2);
+    text-align: center; }
+  footer .sign { font-family: "Lora", serif; color: var(--accent); font-weight: 600; font-size: 16px; }
+  .bottom-bar { height: 6px; background: var(--primary); position: absolute; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="bar"><span>{{DATE}}</span><span class="brand">So Media</span></header>
+    <div class="accent-stripe"></div>
+    <div class="content">
+      <div class="meta">
+        <strong>לכבוד:</strong> {{RECIPIENT}} &nbsp;&nbsp;
+        <strong>מאת:</strong> SoMedia CRM &nbsp;&nbsp;
+        <strong>הנדון:</strong> {{SUBJECT}}
+      </div>
+
+      <h1 class="title">הצעת מחיר – {{VARIANT_LABEL}}</h1>
+
+      <section>
+        <h2><span class="num">1.</span>מבוא ורציונל העבודה</h2>
+        <div class="body">{{INTRO}}</div>
+      </section>
+
+      <section>
+        <h2><span class="num">2.</span>המפרט הטכני</h2>
+        <div class="body">
+          <!-- Repeat per spec sub-section: -->
+          <h3>{{SPEC_SECTION_TITLE}}</h3>
+          <ul>
+            <li>{{SPEC_ITEM}}</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2><span class="num">3.</span>חבילות שירות</h2>
+        <div class="body">
+          <h3>{{BASE_PACKAGE_TITLE}}</h3>
+          <ul>
+            <li>{{BASE_PACKAGE_ITEM}}</li>
+          </ul>
+          <!-- Add-ons (optional), repeat: -->
+          <h3>+ {{ADDON_TITLE}}</h3>
+          <ul>
+            <li>{{ADDON_ITEM}}</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2><span class="num">4.</span>הצעת מחיר</h2>
+        <div class="body">
+          <table>
+            <thead>
+              <tr>
+                <th>מסלול</th><th>עלות הקמה (חד פעמי)</th><th>עלות חודשית (ריטיינר)</th><th>הערות</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Repeat per pricing row: -->
+              <tr><td>{{PLAN}}</td><td>{{SETUP_COST}}</td><td>{{MONTHLY_COST}}</td><td>{{NOTES}}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="tax-note">{{TAX_NOTE}}</p>
+      </section>
+
+      <section>
+        <h2><span class="num">5.</span>דרישות תחילת עבודה (Blockers)</h2>
+        <div class="body">
+          <ul>
+            <li>{{BLOCKER}}</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2><span class="num">6.</span>תהליכי עבודה</h2>
+        <div class="body">
+          <ul>
+            <li>{{WORKFLOW_NOTE}}</li>
+          </ul>
+        </div>
+      </section>
+
+      <footer><span class="sign">בכבוד רב</span></footer>
+    </div>
+    <div class="bottom-bar"></div>
+  </div>
+</body>
+</html>

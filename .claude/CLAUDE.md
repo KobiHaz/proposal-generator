@@ -1,92 +1,62 @@
-> Consolidated 2026-06-02 - merged from the Cowork cabinet. This `.claude/` is the single source of truth.
-
 # Proposal Generator — Project Workspace
 
-React-based proposal and quote generator. RTL Hebrew interface for affiliate agreements and CRM proposals.
+> Refactored 2026-07-25 — retired the React/Firebase app workflow. Proposals are now drafted
+> via the **`proposal-kit` skill** and rendered to PDF. No Firebase, no database, no hosting.
 
-**Stack:** React 19 + TypeScript + Vite + Tailwind v4 + Radix UI + Firebase
-**Project path:** `~/.gemini/antigravity/projects/proposal-generator`
+Document generation for Kobi's client proposals & agreements (RTL Hebrew). Two brand lines,
+each with a proposal (הצעת מחיר) and an engagement agreement (הסכם התקשרות):
+
+| Line | "From" | Service | Design |
+|------|--------|---------|--------|
+| **So Media** (Kobi as So Media's supplier) | SoMedia CRM · סו מדיה בע״מ ח.פ 516759149 | Lead automation ("מוח לידים חכם", iPlan, WordPress + Meta) | dark-green + pink |
+| **XSHEVA** (Kobi direct) | Kobi Hazout · XSHEVA | Strategic AI architecture (ERP, workflow automation) | black + neon-orange #FF6B35 |
 
 ---
 
-## How to Run
+## Primary workflow — the `proposal-kit` skill
+
+`.claude/skills/proposal-kit/` turns client requirements into a branded A4 PDF.
+
+```
+SKILL.md                       intake (brand + doc type) → assemble → draft → render
+shared/render.sh               headless-Chrome HTML → A4 PDF (the confirmed pipeline)
+shared/section-structure.md    canonical sections per doc type
+brands/<somedia|xsheva>/       design-system.md · rules.md · proposal.html · agreement.html
+examples/<brand>/              redacted real proposals (phrasing reference)
+```
+
+**Render:** `.claude/skills/proposal-kit/shared/render.sh build.html out.pdf`
+**Never** persist output to any database. Redacted examples must contain no real client names or ₪ amounts.
+
+---
+
+## Secondary — React renderer (Firebase-free local preview)
+
+The old React app is kept as an **interactive preview for the So Media design** (its
+`ProposalDocument`/`QuoteDocument` are the So Media proposal + agreement layout). Firebase,
+auth, and saved-proposals were removed.
 
 ```sh
-cd ~/.gemini/antigravity/projects/proposal-generator
 npm install
-npm run dev    # http://localhost:8085
+npm run dev    # http://localhost:8085 — form → live A4 preview → "שמירה כ-PDF"
 ```
 
----
-
-## Folder Map (project)
-
-```
-src/
-  projects/     → Pages: ProposalPage, QuotePage, MyProposalsPage, LoginPage
-  contexts/     → AuthContext (Firebase Auth), EditContext (editing state)
-  lib/
-    firestore.ts → save / list / delete / get
-  types/         → ProposalData, QuoteData (src/projects/types.ts)
-```
-
----
-
-## Data Model
-
-| Entity | Collection | Key Fields |
-|--------|------------|------------|
-| SavedProposal | `proposals` | `userId`, `variant` (crm\|automation), `data: ProposalData` |
-| SavedAgreement | `agreements` | `userId`, `variant`, `data: QuoteData` |
-
-**ProposalData:** recipient, specSections, basePackage, addOns, pricingRows, blockers
-**QuoteData:** clientName, paymentModel (fixed\|hourly), pricing, terms
-
----
-
-## Firestore Security Rules
-
-```javascript
-// proposals + agreements
-allow create: if request.auth.uid == request.resource.data.userId;
-allow read, delete: if request.auth.uid == resource.data.userId;
-allow update: if request.auth.uid == resource.data.userId
-  && request.resource.data.userId == resource.data.userId; // userId immutable
-```
-
-**Composite index required:** `userId ASC` + `updatedAt DESC`
-
----
-
-## Architecture Flow
-
-```
-Pages → AuthContext / EditContext → lib/firestore.ts → Firebase
-```
-
-- Queries: `orderBy('updatedAt', 'desc')` — server-side sort
-- Delete: filter local state array (no refetch)
+**Stack:** React 19 + TypeScript + Vite + Tailwind v4 + Radix UI. Types in `src/projects/types.ts`.
 
 ---
 
 ## Core Rules
 
-1. **RTL everywhere** — `dir="rtl"` on all main containers
-2. **No `console.log`** — `console.error` for error paths only
-3. **Context memoization** — wrap context values in `useMemo`
-4. **Firestore userId immutability** — enforced by security rule on update
-5. **Composite index** — required for `userId` + `updatedAt` list queries
-6. **`parseNumberInput()`** — all number form fields; normalizes empty → 0
-7. **Exhaustive switch** — in `getTabForDoc` and similar discriminated unions
-8. **Print styles** — in `index.css` @media print, never `dangerouslySetInnerHTML`
-9. **Soft delete** — set `isDeleted: true` on Firestore documents, filter on read; never hard-delete
-
----
-
-## Reference Docs
-
-- [architecture.md](knowledge/architecture.md) — Firestore operations, component flow
+1. **RTL everywhere** — `dir="rtl"` on all main containers / templates.
+2. **No `console.log`** — `console.error` for error paths only.
+3. **Context memoization** — wrap context values in `useMemo` (renderer).
+4. **`parseNumberInput()`** — all number form fields; normalizes empty → 0 (renderer).
+5. **Exhaustive switch** — in discriminated unions.
+6. **Print/PDF** — templates use inline CSS + `@page { size: A4 }`; renderer uses `@media print` in `index.css`; never `dangerouslySetInnerHTML`.
+7. **No Firebase / no persistence** — drafting only; signing (Documenso) is a separate future concern.
 
 ## Memory & Plans
 
 - [memory.md](memory.md) — decisions, active context
+- Spec: `docs/superpowers/specs/2026-07-25-xsheva-proposal-kit-design.md`
+- Plan: `docs/superpowers/plans/2026-07-25-proposal-kit.md`
