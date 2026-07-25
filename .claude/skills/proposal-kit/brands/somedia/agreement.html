@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>הסכם התקשרות — So Media</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --primary: hsl(158 75% 22%); --accent: hsl(330 85% 60%);
+    --fg: hsl(0 0% 9%); --muted: hsl(0 0% 40%); --border: hsl(158 20% 88%);
+    --secondary: hsl(158 30% 95%);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Heebo", system-ui, sans-serif; color: var(--fg); background:#fff; }
+  .page { width: 210mm; min-height: 297mm; background: #fff; position: relative; }
+  header.bar { height: 16mm; background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20mm; direction: ltr; font-size: 13px; }
+  header.bar .brand { font-weight: 700; letter-spacing: .04em; }
+  .accent-stripe { height: 2px; background: var(--accent); }
+  .content { padding: 20mm; padding-top: 12mm; }
+  .doc-title { text-align: center; margin-bottom: 32px; }
+  .doc-title h1 { font-family: "Lora", Georgia, serif; font-size: 26px; font-weight: 700;
+    border-bottom: 2px solid var(--primary); display: inline-block; padding-bottom: 6px; margin: 0; }
+  .doc-title p { color: var(--muted); font-size: 15px; margin: 8px 0 0; }
+  .parties { display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    background: hsl(158 30% 95% / .7); border: 1px solid var(--border);
+    border-right: 4px solid var(--primary); padding: 18px; border-radius: 3px; margin-bottom: 28px; }
+  .parties .label { color: var(--primary); font-size: 11px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+  .parties .name { font-size: 18px; font-weight: 700; }
+  .parties .id { font-size: 13px; color: var(--muted); }
+  section { margin-bottom: 20px; }
+  .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .sec-num { width: 26px; height: 26px; border-radius: 3px; background: var(--primary);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-family: "Lora", serif; font-weight: 700; font-size: 13px; flex: none; }
+  .sec-head h2 { font-size: 15px; font-weight: 700; margin: 0; }
+  .sec-body { padding-right: 20px; border-right: 2px solid var(--border); margin-right: 12px;
+    color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .card { background: hsl(158 30% 95% / .5); border: 1px solid var(--border);
+    padding: 12px; border-radius: 3px; }
+  .amount { font-family: monospace; font-weight: 700; background: hsl(330 85% 60% / .1);
+    color: var(--accent); border: 1px solid hsl(330 85% 60% / .3); padding: 0 4px; border-radius: 2px; }
+  .ip { background: hsl(158 75% 22% / .05); border: 2px solid hsl(158 75% 22% / .3);
+    padding: 12px; border-radius: 3px; }
+  .ip .head { color: var(--primary); font-weight: 700; font-size: 15px; margin: 0 0 6px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .signatures { margin-top: 48px; padding-top: 24px; border-top: 2px solid var(--border); }
+  .signatures h3 { text-align: center; font-family: "Lora", serif; color: var(--accent);
+    font-size: 18px; font-weight: 700; margin: 0 0 40px; }
+  .sig-row { display: flex; justify-content: space-between; padding: 0 40px; }
+  .sig { text-align: center; }
+  .sig .line { width: 200px; border-bottom: 2px solid var(--fg); height: 40px; margin-bottom: 8px; }
+  .sig .who { font-weight: 700; }
+  .bottom-bar { height: 6px; background: var(--primary); position: absolute; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header class="bar"><span>{{DATE}}</span><span class="brand">So Media</span></header>
+    <div class="accent-stripe"></div>
+    <div class="content">
+      <div class="doc-title">
+        <h1>הסכם התקשרות</h1>
+        <p>{{SUBTITLE}}</p>
+      </div>
+
+      <div class="parties">
+        <div>
+          <div class="label">צד א׳ (הלקוח)</div>
+          <div class="name">{{CLIENT_NAME}}</div>
+          <div class="id">ח.פ./ע.מ: {{CLIENT_ID}}</div>
+        </div>
+        <div>
+          <div class="label">שם הספק</div>
+          <div class="name">סו מדיה בע״מ</div>
+          <div class="id">ת.ז/ח.פ: 516759149</div>
+        </div>
+      </div>
+
+      <section>
+        <div class="sec-head"><div class="sec-num">1</div><h2>מהות השירות</h2></div>
+        <div class="sec-body">{{SERVICE_DESCRIPTION}}</div>
+      </section>
+
+      <section>
+        <div class="sec-head"><div class="sec-num">2</div><h2>שלב ההקמה</h2></div>
+        <div class="sec-body">
+          <div class="card">
+            <strong>{{PAYMENT_OPTION_TITLE}}</strong>
+            <ul>
+              <li>עלות כוללת: <span class="amount">{{FIXED_PRICE}}</span> ₪ + מע״מ עבור פיתוח המערכת לפי האפיון.</li>
+              <li>אבני דרך: מקדמה 50% עם החתימה; בטא 0% עם הצגת גרסת בדיקה; יתרה 50% עם מסירת הקוד והעלאה לאוויר.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="sec-head"><div class="sec-num">3</div><h2>לוחות זמנים ושיתוף פעולה</h2></div>
+        <div class="sec-body card">
+          <div><strong>לוחות זמנים:</strong> פיתוח המערכת מוערך בכ-{{TIMELINE_DAYS}} ימי עבודה מרגע העמדת כל החומרים ע״י הלקוח.</div>
+          <div><strong>שיתוף פעולה:</strong> {{CLIENT_OBLIGATIONS}}</div>
+        </div>
+      </section>
+
+      <section>
+        <div class="sec-head"><div class="sec-num">4</div><h2>תחזוקה, תמיכה וניהול ענן</h2></div>
+        <div class="sec-body two-col">
+          <div class="card">
+            <strong>א. דמי ניהול תשתיות</strong>
+            <ul>
+              <li>ריטיינר: <strong>{{RETAINER}} ₪</strong> + מע״מ (התחייבות מינימלית 5 חודשים).</li>
+              <li>כולל: ניהול תשתיות ענן, ניטור וגיבויים.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <strong>ב. אחריות ובאגים</strong>
+            <ul>
+              <li>תיקון באגים חינם למשך 14 יום.</li>
+              <li>שינויים/הדרכה: 350 ₪ לשעה, אינם כלולים באפיון.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="sec-head"><div class="sec-num">5</div><h2>קניין רוחני ובעלות</h2></div>
+        <div class="sec-body">
+          <div class="ip">
+            <p class="head">✔ בעלות מלאה ללקוח</p>
+            <p>עם פירעון מלא של כל התשלומים, הלקוח יקבל בעלות מלאה ובלעדית על הלוגיקה, התסריטים והסצנריונים של המערכת.</p>
+            <p style="font-size:11px; font-style:italic; margin-top:6px;">* החרגת אחריות: במידה והלקוח יבצע שינוי כלשהו בקוד באופן עצמאי, אחריות הספק תפוג מיידית.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="two-col">
+        <section>
+          <div class="sec-head"><div class="sec-num">6</div><h2>תנאי ביטול</h2></div>
+          <div class="sec-body">במקרה של ביטול ביוזמת הלקוח, המקדמה לא תוחזר והלקוח ישלם עבור שעות העבודה שבוצעו בפועל.</div>
+        </section>
+        <section>
+          <div class="sec-head"><div class="sec-num">7</div><h2>דפדפנים והחרגות</h2></div>
+          <div class="sec-body">
+            <div><strong>תמיכה:</strong> Chrome, Safari, Edge (גרסאות אחרונות).</div>
+            <div><strong>לא כולל:</strong> הזנת תכנים, עיצוב גרפי של מותג, רכישת דומיינים, הדרכה, ותמיכה בשפות מעבר לעברית.</div>
+          </div>
+        </section>
+      </div>
+
+      <section>
+        <div class="sec-head"><div class="sec-num">8</div><h2>הגבלת אחריות</h2></div>
+        <div class="sec-body">אחריות הספק לכל נזק מוגבלת לתקרה של הסכום ששולם לו בפועל. הספק לא יהיה אחראי לנזקים עקיפים, אובדן נתונים או הפסד הכנסה.</div>
+      </section>
+
+      <div class="signatures">
+        <h3>ולראיה באו הצדדים על החתום</h3>
+        <div class="sig-row">
+          <div class="sig"><div class="line"></div><div class="who">חתימת הספק</div></div>
+          <div class="sig"><div class="line"></div><div class="who">חתימת הלקוח</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar"></div>
+  </div>
+</body>
+</html>
