@@ -5,8 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { DocVariant } from '@/lib/firestore';
-import type { ProposalData, QuoteData } from '@/projects/types';
+import type { DocVariant, ProposalData, QuoteData } from '@/projects/types';
 
 export interface EditingDoc {
   id: string;

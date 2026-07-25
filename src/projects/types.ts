@@ -1,3 +1,6 @@
+export type DocType = 'proposal' | 'agreement';
+export type DocVariant = 'crm' | 'automation';
+
 export interface ProposalData {
   date: string;
   recipient: string;
