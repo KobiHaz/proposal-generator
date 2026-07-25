@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>XSHEVA — הסכם התקשרות</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --ink:#0a0a0a; --paper:#fff; --orange:#FF6B35; --muted:#555; --line:#e5e5e5; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Inter","Heebo",system-ui,sans-serif; color:var(--ink); background:#fff; }
+  .page { width:210mm; min-height:297mm; padding:20mm; position:relative; page-break-after:always; }
+  .page:last-child { page-break-after:auto; }
+  .kicker { color:var(--orange); font-weight:700; letter-spacing:.12em; font-size:12px; text-transform:uppercase; }
+  h1 { font-family:"Space Grotesk","Inter",sans-serif; font-size:30px; margin:12px 0; }
+  h2 { font-family:"Space Grotesk","Inter",sans-serif; font-size:16px; margin:0 0 6px; }
+  h2 .num { color:var(--orange); }
+  p, li, td, th { font-size:13px; line-height:1.7; color:var(--muted); }
+  .rule { height:3px; width:52px; background:var(--orange); margin:10px 0 18px; }
+  section { margin-bottom:18px; }
+  .parties { display:grid; grid-template-columns:1fr 1fr; gap:20px; border:1px solid var(--line);
+    border-right:3px solid var(--orange); padding:14px; margin:16px 0 26px; }
+  .parties .label { color:var(--orange); font-size:11px; font-weight:700; text-transform:uppercase; }
+  .parties .name { font-family:"Space Grotesk",sans-serif; font-size:17px; color:var(--ink); }
+  table { width:100%; border-collapse:collapse; margin-top:6px; }
+  th { text-align:right; border-bottom:2px solid var(--orange); padding:8px; color:var(--ink); font-family:"Space Grotesk",sans-serif; }
+  td { padding:8px; border-bottom:1px solid var(--line); }
+  .signatures { margin-top:40px; padding-top:20px; border-top:1px solid var(--line); }
+  .sig-row { display:flex; justify-content:space-between; padding:0 30px; margin-top:30px; }
+  .sig .line { width:200px; border-bottom:2px solid var(--ink); height:36px; margin-bottom:8px; }
+  .sig .who { font-family:"Space Grotesk",sans-serif; color:var(--ink); }
+  .confidential { position:absolute; bottom:14mm; left:20mm; right:20mm; font-size:10px; color:var(--muted);
+    border-top:1px solid var(--line); padding-top:8px; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="kicker">XSHEVA · Strategic AI Architecture</div>
+    <h1>הסכם התקשרות</h1>
+    <div class="rule"></div>
+    <p>{{SUBTITLE}}</p>
+
+    <div class="parties">
+      <div>
+        <div class="label">צד א׳ (הלקוח)</div>
+        <div class="name">{{CLIENT_NAME}}</div>
+        <div>ח.פ/ע.מ: {{CLIENT_ID}}</div>
+      </div>
+      <div>
+        <div class="label">הספק</div>
+        <div class="name">XSHEVA — Kobi Hazout</div>
+        <div>kobi@xsheva.com</div>
+      </div>
+    </div>
+
+    <section>
+      <h2><span class="num">1.</span> מהות השירות</h2>
+      <p>{{SERVICE_DESCRIPTION}}</p>
+    </section>
+
+    <section>
+      <h2><span class="num">2.</span> שלב ההקמה ואבני תשלום</h2>
+      <table>
+        <thead><tr><th>אבן</th><th>תנאי</th><th>אחוז</th><th>סכום (₪)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>חתימת הסכם</td><td>25%</td><td>{{PAY_1}}</td></tr>
+          <tr><td>2</td><td>Sign-off אפיון (שלב 0)</td><td>25%</td><td>{{PAY_2}}</td></tr>
+          <tr><td>3</td><td>Demo מוצלח</td><td>25%</td><td>{{PAY_3}}</td></tr>
+          <tr><td>4</td><td>אישור לקוח + Go-Live</td><td>25%</td><td>{{PAY_4}}</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;">כל המחירים אינם כוללים מע״מ.</p>
+    </section>
+
+    <section>
+      <h2><span class="num">3.</span> לוחות זמנים ושיתוף פעולה</h2>
+      <p>{{TIMELINE}}</p>
+    </section>
+
+    <section>
+      <h2><span class="num">4.</span> תחזוקה, תמיכה ו-SLA</h2>
+      <p>ריטיינר תחזוקה: {{RETAINER}}. SLA: תגובה לתקלה קריטית 4 שעות עבודה, פתרון 48 שעות; תקלה רגילה 24 שעות; יעד Uptime {{UPTIME}}.</p>
+    </section>
+
+    <section>
+      <h2><span class="num">5.</span> אבטחת מידע</h2>
+      <p>עיבוד self-hosted על VPS בשליטת הלקוח; רק ניתוח טקסט נשלח ל-Anthropic API. DPA לפי הצורך.</p>
+    </section>
+
+    <section>
+      <h2><span class="num">6.</span> קניין רוחני ובעלות</h2>
+      <p>עם פירעון מלא, הלקוח מקבל בעלות מלאה על הלוגיקה, הסצנריונים והתשתית שפותחה עבורו, למעט רכיבי מדף/שירותי צד ג׳.</p>
+    </section>
+
+    <section>
+      <h2><span class="num">7.</span> תנאי ביטול והגבלת אחריות</h2>
+      <p>ביטול ביוזמת הלקוח: תשלום עבור אבני הדרך שהושלמו בפועל. אחריות הספק מוגבלת לסכום ששולם בפועל; ללא נזקים עקיפים/אובדן נתונים/הפסד הכנסה.</p>
+    </section>
+
+    <div class="signatures">
+      <div class="sig-row">
+        <div class="sig"><div class="line"></div><div class="who">חתימת הספק — XSHEVA</div></div>
+        <div class="sig"><div class="line"></div><div class="who">חתימת הלקוח</div></div>
+      </div>
+    </div>
+
+    <div class="confidential">מוגש ע״י Kobi Hazout · XSHEVA · kobi@xsheva.com · מסמך סודי · תוקף: {{VALID_UNTIL}}</div>
+  </div>
+</body>
+</html>
