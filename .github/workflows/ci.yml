@@ -1,0 +1,15 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    uses: 22syn/ci-templates/.github/workflows/node-ci.yml@main
+    with:
+      run-lint: false # `lint` script calls eslint, but eslint isn't a declared dependency — fails on a clean install
+      run-test: false # no test script defined yet
+      run-build: true
