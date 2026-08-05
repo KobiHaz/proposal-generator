@@ -42,11 +42,12 @@ WHITE    = "#FFFFFF"
 
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
-# staircase logo glyph (48×48)
+# centered-ribbon logo glyph (48×48)
 LOGO = (
     '<svg viewBox="0 0 48 48" width="30" height="30" '
     'style="filter:drop-shadow(0 0 14px rgba(255,107,53,.5));vertical-align:middle;">'
-    f'<path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="{ORANGE}"/></svg>'
+    f'<path d="M10 32L10 22L24 22L24 12L38 12" fill="none" stroke="{ORANGE}" '
+    'stroke-width="8" stroke-linejoin="miter" stroke-linecap="square"/></svg>'
 )
 
 # ─── fonts (embedded base64 — reproducible on any machine) ────────────────────

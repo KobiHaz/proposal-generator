@@ -24,7 +24,7 @@ A prior Cowork session generated a Rav-Bariach proposal but used a **wrong/legac
 | Typeface (only) | **Space Grotesk** (300–700), via Google Fonts |
 | Radii | 2 (buttons/inputs) · 4 (chips) · 8–12 (cards/tables) |
 | Spacing scale | 8 / 16 / 32 / 64 / 96 / 128 |
-| Logo glyph | staircase `M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z` (48×48), fill orange |
+| Logo glyph | centered ribbon `M10 32L10 22L24 22L24 12L38 12` (48×48), stroke orange, stroke-width 8 — updated 2026-08-05, was the corner-anchored staircase |
 | Wordmark | **XSHEVA** — always all-caps |
 
 **Brand rules enforced in content:** no emoji (any), no exclamation marks, XSHEVA all-caps, architecture vocabulary. Eyebrows = uppercase, wide tracking, orange.
