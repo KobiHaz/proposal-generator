@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FileSignature, FileText, Search, Trash2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -22,23 +22,47 @@ function isProposal(d: DocItem): d is SavedProposal {
   return 'recipient' in (d as SavedProposal).data;
 }
 
-export interface EditItemDoc {
-  id: string;
-  type: 'proposal' | 'agreement';
-  variant: DocVariant;
-  data: unknown;
+function getDocName(d: DocItem): string {
+  return isProposal(d) ? d.data.recipient : d.data.clientName;
 }
 
-interface MyProposalsPageProps {
-  onEditItem: (doc: EditItemDoc) => void;
-}
+type TypeFilter = 'all' | 'proposal' | 'agreement';
+type VariantFilter = 'all' | DocVariant;
 
-export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
+const selectClassName =
+  'h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
+
+export function MyProposalsPage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<DocItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  const [variantFilter, setVariantFilter] = useState<VariantFilter>('all');
+
+  const hasActiveFilters = search.trim() !== '' || typeFilter !== 'all' || variantFilter !== 'all';
+
+  const resetFilters = useCallback(() => {
+    setSearch('');
+    setTypeFilter('all');
+    setVariantFilter('all');
+  }, []);
+
+  const filteredItems = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return items.filter((doc) => {
+      const type = isProposal(doc) ? 'proposal' : 'agreement';
+      if (typeFilter !== 'all' && type !== typeFilter) return false;
+      if (variantFilter !== 'all' && doc.variant !== variantFilter) return false;
+      if (query && !getDocName(doc).toLowerCase().includes(query)) return false;
+      return true;
+    });
+  }, [items, search, typeFilter, variantFilter]);
+
+  const proposalCount = useMemo(() => items.filter(isProposal).length, [items]);
+  const agreementCount = items.length - proposalCount;
 
   const loadItems = useCallback(async (): Promise<DocItem[]> => {
     if (!user?.uid) return [];
@@ -75,8 +99,7 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
     };
   }, [user?.uid, loadItems]);
 
-  const handleDelete = async (e: React.MouseEvent, doc: DocItem) => {
-    e.stopPropagation();
+  const handleDelete = async (doc: DocItem) => {
     if (!window.confirm('האם למחוק?')) return;
     setDeletingId(doc.id);
     setError(null);
@@ -92,16 +115,6 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
     } finally {
       setDeletingId(null);
     }
-  };
-
-  const handleClick = (doc: DocItem) => {
-    const type = isProposal(doc) ? 'proposal' : 'agreement';
-    onEditItem({
-      id: doc.id,
-      type,
-      variant: doc.variant,
-      data: doc.data,
-    });
   };
 
   if (loading) {
@@ -150,10 +163,7 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
       <div className="p-8" dir="rtl">
         <div className="max-w-md mx-auto text-center py-16 px-6 rounded-xl border border-dashed border-border bg-muted/30">
           <p className="text-muted-foreground text-base leading-relaxed">
-            אין הצעות שמורות.
-          </p>
-          <p className="text-muted-foreground/90 text-sm mt-1">
-            צור הצעה חדשה בטאבים למעלה.
+            אין הצעות שמורות עדיין.
           </p>
         </div>
       </div>
@@ -162,6 +172,98 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
 
   return (
     <div className="p-6" dir="rtl">
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/60 text-foreground">
+            <FileText size={18} />
+          </div>
+          <div>
+            <p className="text-2xl font-semibold text-foreground leading-none">{items.length}</p>
+            <p className="text-sm text-muted-foreground mt-1">סה"כ מסמכים</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <FileText size={18} />
+          </div>
+          <div>
+            <p className="text-2xl font-semibold text-foreground leading-none">{proposalCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">הצעות מחיר</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent">
+            <FileSignature size={18} />
+          </div>
+          <div>
+            <p className="text-2xl font-semibold text-foreground leading-none">{agreementCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">הסכמים</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-3 shadow-sm">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search
+            size={16}
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="חיפוש לפי שם נמען / לקוח..."
+            className="h-10 w-full rounded-md border border-input bg-background py-2 pr-9 pl-3 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          />
+        </div>
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value as TypeFilter)}
+          className={selectClassName}
+          aria-label="סינון לפי סוג"
+        >
+          <option value="all">כל הסוגים</option>
+          <option value="proposal">הצעה</option>
+          <option value="agreement">הסכם</option>
+        </select>
+        <select
+          value={variantFilter}
+          onChange={(e) => setVariantFilter(e.target.value as VariantFilter)}
+          className={selectClassName}
+          aria-label="סינון לפי גרסה"
+        >
+          <option value="all">כל הגרסאות</option>
+          <option value="crm">CRM</option>
+          <option value="automation">אוטומציות</option>
+        </select>
+        <button
+          type="button"
+          onClick={resetFilters}
+          disabled={!hasActiveFilters}
+          className="inline-flex h-10 items-center gap-1.5 rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+        >
+          <X size={15} />
+          איפוס סינון
+        </button>
+        <span className="mr-auto text-sm text-muted-foreground">
+          מציג {filteredItems.length} מתוך {items.length}
+        </span>
+      </div>
+
+      {filteredItems.length === 0 ? (
+        <div className="max-w-md mx-auto text-center py-16 px-6 rounded-xl border border-dashed border-border bg-muted/30">
+          <p className="text-muted-foreground text-base leading-relaxed">
+            לא נמצאו תוצאות תואמות לסינון.
+          </p>
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="text-primary underline text-sm mt-2"
+          >
+            אפס את הסינון
+          </button>
+        </div>
+      ) : (
       <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-sm">
         <table className="w-full border-collapse">
           <thead>
@@ -174,17 +276,14 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
             </tr>
           </thead>
           <tbody>
-            {items.map((doc) => {
+            {filteredItems.map((doc) => {
               const type = isProposal(doc) ? 'proposal' : 'agreement';
-              const name = isProposal(doc)
-                ? (doc as SavedProposal).data.recipient
-                : (doc as SavedAgreement).data.clientName;
+              const name = getDocName(doc);
               const date = doc.updatedAt?.toDate?.() ?? new Date();
               return (
                 <tr
                   key={`${type}-${doc.id}`}
-                  className="border-b border-border last:border-b-0 hover:bg-muted/60 cursor-pointer transition-colors duration-200"
-                  onClick={() => handleClick(doc)}
+                  className="border-b border-border last:border-b-0 hover:bg-muted/40 transition-colors duration-200"
                 >
                   <td className="py-3 px-4">
                     <span
@@ -219,7 +318,7 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
                   <td className="py-3 px-4">
                     <button
                       type="button"
-                      onClick={(e) => handleDelete(e, doc)}
+                      onClick={() => handleDelete(doc)}
                       disabled={deletingId === doc.id}
                       className="p-1.5 rounded text-muted-foreground hover:text-destructive hover:bg-muted transition-colors disabled:opacity-50"
                       aria-label="מחק"
@@ -237,6 +336,7 @@ export function MyProposalsPage({ onEditItem }: MyProposalsPageProps) {
           </tbody>
         </table>
       </div>
+      )}
     </div>
   );
 }

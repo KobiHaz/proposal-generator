@@ -2,7 +2,7 @@
 
 # Proposal Generator — Project Workspace
 
-React-based proposal and quote generator. RTL Hebrew interface for affiliate agreements and CRM proposals.
+React-based proposal and quote **dashboard**. RTL Hebrew interface for viewing/managing saved affiliate agreements and CRM proposals. Documents are now generated via chat/skills (see [scripts/build-proposal.py](../scripts/build-proposal.py)), not through this UI — the app is a read-only list with search/filter, not a creation form.
 
 **Stack:** React 19 + TypeScript + Vite + Tailwind v4 + Radix UI + Firebase
 **Project path:** `~/.gemini/antigravity/projects/proposal-generator`
@@ -23,8 +23,8 @@ npm run dev    # http://localhost:8085
 
 ```
 src/
-  projects/     → Pages: ProposalPage, QuotePage, MyProposalsPage, LoginPage
-  contexts/     → AuthContext (Firebase Auth), EditContext (editing state)
+  projects/     → Pages: MyProposalsPage (the only screen), LoginPage
+  contexts/     → AuthContext (Firebase Auth)
   lib/
     firestore.ts → save / list / delete / get
   types/         → ProposalData, QuoteData (src/projects/types.ts)
@@ -61,7 +61,7 @@ allow update: if request.auth.uid == resource.data.userId
 ## Architecture Flow
 
 ```
-Pages → AuthContext / EditContext → lib/firestore.ts → Firebase
+MyProposalsPage → AuthContext → lib/firestore.ts → Firebase
 ```
 
 - Queries: `orderBy('updatedAt', 'desc')` — server-side sort
@@ -76,10 +76,8 @@ Pages → AuthContext / EditContext → lib/firestore.ts → Firebase
 3. **Context memoization** — wrap context values in `useMemo`
 4. **Firestore userId immutability** — enforced by security rule on update
 5. **Composite index** — required for `userId` + `updatedAt` list queries
-6. **`parseNumberInput()`** — all number form fields; normalizes empty → 0
-7. **Exhaustive switch** — in `getTabForDoc` and similar discriminated unions
-8. **Print styles** — in `index.css` @media print, never `dangerouslySetInnerHTML`
-9. **Soft delete** — set `isDeleted: true` on Firestore documents, filter on read; never hard-delete
+6. **Print styles** — in `index.css` @media print, never `dangerouslySetInnerHTML`
+7. **Soft delete** — set `isDeleted: true` on Firestore documents, filter on read; never hard-delete
 
 ---
 

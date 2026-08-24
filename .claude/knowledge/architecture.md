@@ -10,13 +10,16 @@ Firebase Auth + Firestore, html2pdf.js
 ```
 App.tsx
 ├── AuthContext       → Firebase Auth, user session
-├── EditContext       → editing mode, draft state
-├── LoginPage         → public
-└── Protected:
-    ├── ProposalPage      → create/edit CRM or automation proposals
-    ├── QuotePage         → create/edit affiliate agreements
-    └── MyProposalsPage   → list all saved proposals + agreements
+├── LoginPage          → public
+└── MyProposalsPage    → protected; the app's only screen.
+                          Lists all saved proposals + agreements with
+                          search/type/variant filters + reset, and delete.
 ```
+
+Document creation/editing no longer happens in this UI — proposals and
+agreements are generated via chat/skills instead (see
+`scripts/build-proposal.py`). This app is a read-only dashboard over the
+Firestore-saved documents.
 
 ## Firestore Operations (lib/firestore.ts)
 
@@ -32,7 +35,6 @@ getDocument(collection, id)           → single fetch
 
 - **Composite index:** `userId ASC` + `updatedAt DESC` — required for list queries
 - **Delete pattern:** filter local state after delete (don't refetch)
-- **Number inputs:** `parseNumberInput(value)` → empty string becomes 0
 - **RTL:** `dir="rtl"` on all main containers
 - **Print:** `@media print` in `index.css`; never inline `dangerouslySetInnerHTML`
 - **Context values:** always wrapped in `useMemo` for referential stability
